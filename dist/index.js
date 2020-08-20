@@ -6899,7 +6899,6 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
-console.log(github.context.payload.repository);
 // get the name of the repo this action is running in
 const fullRepo = github.context.payload.repository.full_name;
 const repo = fullRepo.split("/")[1];
