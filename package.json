@@ -1,6 +1,6 @@
 {
   "name": "markdown-code-runner",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "github action to run code in a markdown file and append the output to the markdown file",
   "main": "dist/index.js",
   "repository": "https://github.com/NWylynko/markdown-code-runner.git",
@@ -12,6 +12,8 @@
     "watch": "nodemon"
   },
   "dependencies": {
+    "@actions/core": "^1.2.4",
+    "@actions/github": "^4.0.0",
     "glob": "^7.1.6"
   },
   "devDependencies": {
