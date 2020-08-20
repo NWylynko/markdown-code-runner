@@ -6899,15 +6899,18 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
+// get the name of the repo this action is running in
 const repo = Object(github.context.payload.repository.full_name.split)("/")[1];
+// only want to run the code in the repo this is being run on
 const repoDir = `/home/runner/work/${repo}/${repo}`;
+// get al the languages supported by genericExecutor
 const supportedLanguages = Object.keys(languages);
 // convert callback functions to async friendly functions
 const globAsync = external_util_default().promisify(glob_default.a);
+// all the markdown files in the repoDir
+const folders = `${repoDir}/**/*.md`;
 function run() {
     return src_awaiter(this, void 0, void 0, function* () {
-        const folders = `${repoDir}/**/*.md`;
-        // const folders = __dirname + "/../*.md";
         //get the markdown files
         const files = yield globAsync(folders);
         if (files.length === 0) {
