@@ -6,22 +6,22 @@ import * as github from "@actions/github";
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
 
+// get the name of the repo this action is running in
+const repo = github.context.payload.repository.full_name.split("/")[1];
+
+// only want to run the code in the repo this is being run on
+const repoDir = `/home/runner/work/${repo}/${repo}`;
+
+// get al the languages supported by genericExecutor
+const supportedLanguages = Object.keys(languages);
+
+// convert callback functions to async friendly functions
+const globAsync = util.promisify(glob);
+
+// all the markdown files in the repoDir
+const folders = `${repoDir}/**/*.md`;
+
 async function run() {
-
-  // get the name of the repo this action is running in
-  const repo = github.context.payload.repository.full_name.split("/")[1];
-
-  // only want to run the code in the repo this is being run on
-  const repoDir = `/home/runner/work/${repo}/${repo}`;
-
-  // get al the languages supported by genericExecutor
-  const supportedLanguages = Object.keys(languages);
-
-  // convert callback functions to async friendly functions
-  const globAsync = util.promisify(glob);
-
-  const folders = `${repoDir}/**/*.md`;
-
   //get the markdown files
   const files = await globAsync(folders);
 
