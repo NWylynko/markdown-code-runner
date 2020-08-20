@@ -1,0 +1,16 @@
+name: run markdown
+
+on: push
+
+jobs:
+  run-code:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: nwylynko/markdown-code-runner@0.2.0
+      - uses: EndBug/add-and-commit@v4
+        with:
+          author_name: markdown runner
+          message: 'Updated markdown files'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
