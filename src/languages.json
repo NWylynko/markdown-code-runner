@@ -3,5 +3,6 @@
     "javascript": "node",
     "py": "python3",
     "python": "python3",
-    "bash": "bash"
+    "bash": "bash",
+    "sh": "sh"
 }

@@ -2,114 +2,107 @@ import { promises as fs } from "fs";
 import util from "util";
 import glob from "glob";
 import languages from "./languages.json";
-import { spawn } from "child_process"
+import genericExecutor from "./genericExecutor";
 
-const supportedLanguages = Object.keys(languages)
+const supportedLanguages = Object.keys(languages);
 
 // convert callback functions to async friendly functions
 const globAsync = util.promisify(glob);
 
 async function run() {
-    const folders = "/home/runner/work/**/*.md";
-  // const folders = __dirname + "/../**/*.md";
+  const folders = "/home/runner/work/**/*.md";
+  // const folders = __dirname + "/../examples/*.md";
 
   //get the markdown files
   const files = await globAsync(folders);
 
+  if (files.length === 0) {
+    console.error("no markdown files found :(");
+    process.exit(1);
+  }
+
   // loop over each file found
   files.forEach(async (path) => {
-
-    console.log('opening', path)
-    process.stdout.write('   ')
+    console.log("opening", path);
 
     // read in the markdown file
     const markdownFile = await fs.readFile(path, "utf8");
 
-    const splitter = new RegExp(/\n[`]{3}[ ]/) // '\n``` '
+    const splitter = new RegExp(/\n[`]{3}[ ]/); // '\n``` '
 
     // split the file by '\n``` ' to 'find' the code
-    let parts = markdownFile.split(splitter)
-    parts.shift()
+    let parts = markdownFile.split(splitter);
+    parts.shift();
 
-    const outputs = await Promise.all(parts.map(async (part) => {
-      const codeWithLanguage = part.split('\n```\n')[0]
-      let codeLineArray = codeWithLanguage.split('\n')
-      const MDlanguage = codeLineArray.shift()
-      if (MDlanguage === 'markdown-code-runner output') {
-        // console.log('  found stale output')
-        process.stdout.write(' 👴🏻 ')
-        return {remove: true, codeWithLanguage}
-      } else if (!(supportedLanguages.includes(MDlanguage))) {
-        // console.error('  not supported language')
-        process.stdout.write(' 🙅‍♂️ ')
-        return;
-      }
-      const code = codeLineArray.join('\n')
-      const runner = languages[MDlanguage.toLowerCase()]
-      const randomFileName = Math.floor(Math.random() * 100000000)
+    const outputs = await Promise.all(
+      parts.map(async (part) => {
+        // remove the rest of the string after the closing ```
+        const codeWithLanguage = part.split("\n```\n")[0];
 
-      const fileLocation = `/tmp/${randomFileName}`
+        // split it by the new line so it can get the language from the first line
+        let codeLineArray = codeWithLanguage.split("\n");
 
-      await fs.writeFile(fileLocation, code)
+        // gets the language and removes it from the above array so when its joined it doesn't have it
+        const MDLanguage = codeLineArray.shift();
 
-      return new Promise((resolve) => {
-        const ls = spawn(runner, [fileLocation]);
+        // if the language is markdown-code-runner output its been put there by this code so it needs to be marked for removal so it can be updated
+        if (MDLanguage === "markdown-code-runner output") {
+          console.log("  found stale output, removing it...");
+          return {
+            remove: true,
+            markdownCode: "\n``` " + codeWithLanguage + "\n```\n",
+          };
+        }
+        // or if its not found in the array of supported languages then just skip over it
+        else if (!supportedLanguages.includes(MDLanguage)) {
+          console.warn("  not supported language");
+          return;
+        }
 
-        let output = '\n``` markdown-code-runner output\n'
+        // join the array (without the language part at the start now) back together to be executed
+        const code = codeLineArray.join("\n");
 
-        ls.stdout.on('data', (data) => {
-          output += data
-        });
+        // run it through the generic executor to get the output
+        const output = await genericExecutor(MDLanguage, code)
 
-        ls.stderr.on('data', (data) => {
-          output += data
-        });
-
-        ls.on('close', (code) => {
-          if (code === 0) {
-            // console.log(' ', fileLocation, 'finished successfully')
-            process.stdout.write(' ✔️ ')
-          } else {
-            // console.warn(' ', fileLocation, 'failed with error code', code)
-            process.stdout.write(' ❌ ')
-          }
-          output += '```\n'
-          resolve({ fileLocation, runner, output, codeLineArray, codeWithLanguage, part, MDlanguage })
-        });
+        return {output, markdownCode: "\n``` " + codeWithLanguage + "\n```\n"}
       })
-    }))
+    );
 
-    let newMarkdownFile = markdownFile
+    // copy the markdown to a new markdown file so it can be edited
+    let newMarkdownFile = markdownFile;
 
-    await Promise.all(outputs.map(async (output: output) => {
-      if (output?.remove) {
-        const staleOutput = '\n``` ' + output.codeWithLanguage + '\n```\n'
-        newMarkdownFile = newMarkdownFile.replace(staleOutput, '')
-      } else if (output) {
-        const markdownCode = '\n``` ' + output.codeWithLanguage + '\n```\n'
-        const newMarkdown = markdownCode + output.output
-        newMarkdownFile = newMarkdownFile.replace(markdownCode, newMarkdown)
-      }
+    await Promise.all(
+      outputs.map(async ({ remove, markdownCode, output }: output) => {
+        // if a chuck of code has 'markdown-code-runner output' it will be marked for removal because it will be replaced with an updated version
+        if (remove) {
+          // the old output gets removed
+          // replace it with '' (aka nothing)
+          newMarkdownFile = newMarkdownFile.replace(markdownCode, "");
 
-    }))
+          // its possible output is undefined, if the language defined isn't supported for example
+        } else if (output) {
+          // use the markdownCode to position the output bellow it
+          // add the code and output together so its all nice and snug on the markdown
+          const newMarkdown = markdownCode + output;
 
-    fs.writeFile(path, newMarkdownFile)
+          // replace it in the string that will be put into the .md file
+          newMarkdownFile = newMarkdownFile.replace(markdownCode, newMarkdown);
+        }
+      })
+    );
 
-    process.stdout.write('\n\n')
+    // write the new markdown file out :)
+    fs.writeFile(path, newMarkdownFile);
 
-  })
-
+    console.log("written", path, ":)");
+  });
 }
 
 interface output {
-  fileLocation: string
-  runner: string
-  output: string
-  codeLineArray: string[]
-  codeWithLanguage: string
-  part: string
-  MDlanguage: string
-  remove?: boolean
+  output?: string;
+  remove?: boolean;
+  markdownCode?: string;
 }
 
-run()
+run();
