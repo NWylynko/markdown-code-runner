@@ -17,7 +17,7 @@ console.table(table)
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-4517.71843546034
+13491.224511113387
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
