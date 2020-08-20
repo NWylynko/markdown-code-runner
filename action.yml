@@ -1,0 +1,8 @@
+name: 'markdown-code-runner'
+description: 'github action to run code in a markdown file and append the output to the markdown file'
+branding:
+  icon: 'code'
+  color: 'red'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
