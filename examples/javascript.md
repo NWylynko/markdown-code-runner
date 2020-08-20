@@ -6,10 +6,11 @@ console.log('the javascript code is run in node')
 console.log('it can do maths')
 console.log(7 * 30 * Math.random() * 100)
 console.log('and can render a table')
+const score = () => Math.floor(Math.random() * 100)
 const table = [
-    {name: "tomato", yummy: 3},
-    {name: "pizza", yummy: 7},
-    {name: "burger", yummy: 9}
+    {name: "chips", yummy: score()},
+    {name: "pizza", yummy: score()},
+    {name: "burger", yummy: score()}
 ]
 console.table(table)
 ```
