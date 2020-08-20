@@ -2,13 +2,12 @@ import { promises as fs } from "fs";
 import util from "util";
 import glob from "glob";
 // import * as core from '@actions/core';
-import * as github from '@actions/github';
+import * as github from "@actions/github";
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
 
-// console.log(core)
-console.log(github.context.payload.repository.full_name)
-process.exit();
+const repo = github.context.payload.repository.full_name.split("/")[1];
+const repoDir = `/home/runner/work/${repo}/${repo}`;
 
 const supportedLanguages = Object.keys(languages);
 
@@ -16,7 +15,7 @@ const supportedLanguages = Object.keys(languages);
 const globAsync = util.promisify(glob);
 
 async function run() {
-  const folders = "/home/runner/work/**/*.md";
+  const folders = `${repoDir}/**/*.md`;
   // const folders = __dirname + "/../*.md";
 
   //get the markdown files
@@ -29,7 +28,7 @@ async function run() {
 
   // loop over each file found
   files.forEach(async (path) => {
-    console.log("opening", path);
+    console.log("opening", shortenDir(path));
 
     // read in the markdown file
     const markdownFile = await fs.readFile(path, "utf8");
@@ -69,9 +68,12 @@ async function run() {
         const code = codeLineArray.join("\n");
 
         // run it through the generic executor to get the output
-        const output = await genericExecutor(MDLanguage, code)
+        const output = await genericExecutor(MDLanguage, code);
 
-        return {output, markdownCode: "\n``` " + codeWithLanguage + "\n```\n"}
+        return {
+          output,
+          markdownCode: "\n``` " + codeWithLanguage + "\n```\n",
+        };
       })
     );
 
@@ -101,9 +103,11 @@ async function run() {
     // write the new markdown file out :)
     fs.writeFile(path, newMarkdownFile);
 
-    console.log("written", path, ":)");
+    console.log("written", shortenDir(path), ":)");
   });
 }
+
+const shortenDir = (fileOrDir: string): string => fileOrDir.replace(repoDir, "");
 
 interface output {
   output?: string;
