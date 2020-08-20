@@ -16,5 +16,5 @@ else:
 
 ``` markdown-code-runner output
 running python code is easy
-all bets on red
+all bets on black
 ```
