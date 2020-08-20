@@ -11,7 +11,7 @@ const globAsync = util.promisify(glob);
 
 async function run() {
   const folders = "/home/runner/work/**/*.md";
-  // const folders = __dirname + "/../examples/*.md";
+  // const folders = __dirname + "/../*.md";
 
   //get the markdown files
   const files = await globAsync(folders);

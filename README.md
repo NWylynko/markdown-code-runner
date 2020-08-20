@@ -27,3 +27,12 @@ echo 'hello world from bash'
 ``` markdown-code-runner output
 hello world from bash
 ```
+
+Shell
+``` sh
+echo 'hello world from Shell'
+```
+
+``` markdown-code-runner output
+hello world from Shell
+```
