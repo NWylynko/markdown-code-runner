@@ -7149,11 +7149,9 @@ var glob_default = /*#__PURE__*/__webpack_require__.n(glob);
 
 // EXTERNAL MODULE: ./node_modules/@actions/core/lib/core.js
 var core = __webpack_require__(470);
-var core_default = /*#__PURE__*/__webpack_require__.n(core);
 
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __webpack_require__(469);
-var github_default = /*#__PURE__*/__webpack_require__.n(github);
 
 // EXTERNAL MODULE: ./src/languages.json
 var languages = __webpack_require__(658);
@@ -7232,8 +7230,8 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
-console.log(core_default.a);
-console.log(github_default.a);
+console.log(core);
+console.log(github);
 process.exit();
 const supportedLanguages = Object.keys(languages);
 // convert callback functions to async friendly functions
