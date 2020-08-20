@@ -6,6 +6,8 @@ import * as github from "@actions/github";
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
 
+console.log(github.context.payload)
+
 // get the name of the repo this action is running in
 const repo = github.context.payload.repository.full_name.split("/")[1];
 

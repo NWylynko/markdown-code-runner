@@ -6899,6 +6899,7 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
+console.log(github.context.payload);
 // get the name of the repo this action is running in
 const repo = Object(github.context.payload.repository.full_name.split)("/")[1];
 // only want to run the code in the repo this is being run on
