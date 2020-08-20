@@ -27,8 +27,3 @@ echo 'hello world from bash'
 ``` markdown-code-runner output
 hello world from bash
 ```
-
-error
-``` error
-echo 'hello world from error'
-```
