@@ -6,17 +6,21 @@ import * as github from "@actions/github";
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
 
-const repo = github.context.payload.repository.full_name.split("/")[1];
-const repoDir = `/home/runner/work/${repo}/${repo}`;
-
-const supportedLanguages = Object.keys(languages);
-
-// convert callback functions to async friendly functions
-const globAsync = util.promisify(glob);
-
 async function run() {
+
+  // get the name of the repo this action is running in
+  const repo = github.context.payload.repository.full_name.split("/")[1];
+
+  // only want to run the code in the repo this is being run on
+  const repoDir = `/home/runner/work/${repo}/${repo}`;
+
+  // get al the languages supported by genericExecutor
+  const supportedLanguages = Object.keys(languages);
+
+  // convert callback functions to async friendly functions
+  const globAsync = util.promisify(glob);
+
   const folders = `${repoDir}/**/*.md`;
-  // const folders = __dirname + "/../*.md";
 
   //get the markdown files
   const files = await globAsync(folders);
@@ -107,7 +111,8 @@ async function run() {
   });
 }
 
-const shortenDir = (fileOrDir: string): string => fileOrDir.replace(repoDir, "");
+const shortenDir = (fileOrDir: string): string =>
+  fileOrDir.replace(repoDir, "");
 
 interface output {
   output?: string;
