@@ -6899,15 +6899,14 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
-// console.log(core)
-console.log(github.context.payload.repository.full_name);
-process.exit();
+const repo = Object(github.context.payload.repository.full_name.split)("/")[1];
+const repoDir = `/home/runner/work/${repo}/${repo}`;
 const supportedLanguages = Object.keys(languages);
 // convert callback functions to async friendly functions
 const globAsync = external_util_default().promisify(glob_default.a);
 function run() {
     return src_awaiter(this, void 0, void 0, function* () {
-        const folders = "/home/runner/work/**/*.md";
+        const folders = `${repoDir}/**/*.md`;
         // const folders = __dirname + "/../*.md";
         //get the markdown files
         const files = yield globAsync(folders);
@@ -6917,7 +6916,7 @@ function run() {
         }
         // loop over each file found
         files.forEach((path) => src_awaiter(this, void 0, void 0, function* () {
-            console.log("opening", path);
+            console.log("opening", shortenDir(path));
             // read in the markdown file
             const markdownFile = yield Object(external_fs_.promises.readFile)(path, "utf8");
             const splitter = new RegExp(/\n[`]{3}[ ]/); // '\n``` '
@@ -6948,7 +6947,10 @@ function run() {
                 const code = codeLineArray.join("\n");
                 // run it through the generic executor to get the output
                 const output = yield src_genericExecutor(MDLanguage, code);
-                return { output, markdownCode: "\n``` " + codeWithLanguage + "\n```\n" };
+                return {
+                    output,
+                    markdownCode: "\n``` " + codeWithLanguage + "\n```\n",
+                };
             })));
             // copy the markdown to a new markdown file so it can be edited
             let newMarkdownFile = markdownFile;
@@ -6970,10 +6972,11 @@ function run() {
             })));
             // write the new markdown file out :)
             Object(external_fs_.promises.writeFile)(path, newMarkdownFile);
-            console.log("written", path, ":)");
+            console.log("written", shortenDir(path), ":)");
         }));
     });
 }
+const shortenDir = (fileOrDir) => fileOrDir.replace(repoDir, "");
 run();
 
 
