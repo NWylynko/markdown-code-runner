@@ -1,13 +1,13 @@
 import { promises as fs } from "fs";
 import util from "util";
 import glob from "glob";
-import * as core from '@actions/core';
+// import * as core from '@actions/core';
 import * as github from '@actions/github';
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
 
-console.log(core)
-console.log(github)
+// console.log(core)
+console.log(github.context.payload.repository.full_name)
 process.exit();
 
 const supportedLanguages = Object.keys(languages);
