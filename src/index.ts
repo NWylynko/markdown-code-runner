@@ -1,18 +1,8 @@
 import { promises as fs } from "fs";
 import util from "util";
 import glob from "glob";
-// import * as core from '@actions/core';
-import * as github from "@actions/github";
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
-
-// get the name of the repo this action is running in
-const fullRepo = github.context.payload.repository.full_name
-
-const repo = fullRepo.split("/")[1];
-
-// only want to run the code in the repo this is being run on
-const repoDir = `/home/runner/work/${repo}/${repo}`;
 
 // get al the languages supported by genericExecutor
 const supportedLanguages = Object.keys(languages);
@@ -20,10 +10,7 @@ const supportedLanguages = Object.keys(languages);
 // convert callback functions to async friendly functions
 const globAsync = util.promisify(glob);
 
-// all the markdown files in the repoDir
-const folders = `${repoDir}/**/*.md`;
-
-async function run() {
+export default async function run(folders: string) {
   //get the markdown files
   const files = await globAsync(folders);
 
@@ -34,7 +21,7 @@ async function run() {
 
   // loop over each file found
   files.forEach(async (path) => {
-    console.log("opening", shortenDir(path));
+    console.log("opening", shortenDir(path, folders));
 
     // read in the markdown file
     const markdownFile = await fs.readFile(path, "utf8");
@@ -109,17 +96,15 @@ async function run() {
     // write the new markdown file out :)
     fs.writeFile(path, newMarkdownFile);
 
-    console.log("written", shortenDir(path), ":)");
+    console.log("written", shortenDir(path, folders), ":)");
   });
 }
 
-const shortenDir = (fileOrDir: string): string =>
-  fileOrDir.replace(repoDir, "");
+const shortenDir = (fileOrDir: string, baseDir: string): string =>
+  fileOrDir.replace(baseDir, "");
 
 interface output {
   output?: string;
   remove?: boolean;
   markdownCode?: string;
 }
-
-run();

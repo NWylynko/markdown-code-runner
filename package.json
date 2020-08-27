@@ -1,14 +1,14 @@
 {
   "name": "markdown-code-runner",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "github action to run code in a markdown file and append the output to the markdown file",
   "main": "dist/index.js",
   "repository": "https://github.com/NWylynko/markdown-code-runner.git",
   "author": "NWylynko <nick1014375@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "ncc build src/index.ts",
-    "start": "ts-node src/index.ts",
+    "build": "ncc build src/githubAction.ts",
+    "dev": "ts-node src/dev.ts",
     "watch": "nodemon"
   },
   "dependencies": {

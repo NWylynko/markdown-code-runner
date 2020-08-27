@@ -8698,7 +8698,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 8848:
+/***/ 4718:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8708,22 +8708,22 @@ __webpack_require__.r(__webpack_exports__);
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(5747);
 
-// EXTERNAL MODULE: ./src/languages.json
-var languages = __webpack_require__(5153);
+// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
+var github = __webpack_require__(5438);
 
 // EXTERNAL MODULE: external "util"
 var external_util_ = __webpack_require__(1669);
 var external_util_default = /*#__PURE__*/__webpack_require__.n(external_util_);
 
-// EXTERNAL MODULE: external "child_process"
-var external_child_process_ = __webpack_require__(3129);
-
 // EXTERNAL MODULE: ./node_modules/glob/glob.js
 var glob = __webpack_require__(1957);
 var glob_default = /*#__PURE__*/__webpack_require__.n(glob);
 
-// EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
-var github = __webpack_require__(5438);
+// EXTERNAL MODULE: ./src/languages.json
+var languages = __webpack_require__(5153);
+
+// EXTERNAL MODULE: external "child_process"
+var external_child_process_ = __webpack_require__(3129);
 
 // CONCATENATED MODULE: ./src/genericExecutor.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -8792,22 +8792,13 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
 
 
 
-// import * as core from '@actions/core';
 
 
-
-// get the name of the repo this action is running in
-const fullRepo = github.context.payload.repository.full_name;
-const repo = fullRepo.split("/")[1];
-// only want to run the code in the repo this is being run on
-const repoDir = `/home/runner/work/${repo}/${repo}`;
 // get al the languages supported by genericExecutor
 const supportedLanguages = Object.keys(languages);
 // convert callback functions to async friendly functions
 const globAsync = external_util_default().promisify((glob_default()));
-// all the markdown files in the repoDir
-const folders = `${repoDir}/**/*.md`;
-function run() {
+function run(folders) {
     return src_awaiter(this, void 0, void 0, function* () {
         //get the markdown files
         const files = yield globAsync(folders);
@@ -8817,7 +8808,7 @@ function run() {
         }
         // loop over each file found
         files.forEach((path) => src_awaiter(this, void 0, void 0, function* () {
-            console.log("opening", shortenDir(path));
+            console.log("opening", shortenDir(path, folders));
             // read in the markdown file
             const markdownFile = yield external_fs_.promises.readFile(path, "utf8");
             const splitter = new RegExp(/\n[`]{3}[ ]/); // '\n``` '
@@ -8873,12 +8864,24 @@ function run() {
             })));
             // write the new markdown file out :)
             external_fs_.promises.writeFile(path, newMarkdownFile);
-            console.log("written", shortenDir(path), ":)");
+            console.log("written", shortenDir(path, folders), ":)");
         }));
     });
 }
-const shortenDir = (fileOrDir) => fileOrDir.replace(repoDir, "");
-run();
+const shortenDir = (fileOrDir, baseDir) => fileOrDir.replace(baseDir, "");
+
+// CONCATENATED MODULE: ./src/githubAction.ts
+// import * as core from '@actions/core';
+
+
+// get the name of the repo this action is running in
+const fullRepo = github.context.payload.repository.full_name;
+const repo = fullRepo.split("/")[1];
+// only want to run the code in the repo this is being run on
+const repoDir = `/home/runner/work/${repo}/${repo}`;
+// all the markdown files in the repoDir
+const folders = `${repoDir}/**/*.md`;
+run(folders);
 
 
 /***/ }),
@@ -9089,6 +9092,6 @@ module.exports = require("zlib");
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(8848);
+/******/ 	return __webpack_require__(4718);
 /******/ })()
 ;
