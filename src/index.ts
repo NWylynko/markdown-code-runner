@@ -4,6 +4,7 @@ import glob from "glob";
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
 import JavascriptExecutor from "./Executors/javascript";
+import TypescriptExecutor from "./Executors/typescript";
 
 // get al the languages supported by genericExecutor
 const supportedLanguages = Object.keys(languages);
@@ -69,6 +70,11 @@ export default async function run(folders: string) {
           if (MDLanguage === "javascript" || MDLanguage === "js") {
             return {
               output: await JavascriptExecutor(code, options),
+              markdownCode,
+            };
+          } else if (MDLanguage === "typescript" || MDLanguage === "ts") {
+            return {
+              output: await TypescriptExecutor(code, options),
               markdownCode,
             };
           } else {

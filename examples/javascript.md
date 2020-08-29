@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-15988.193288303562
+10710.787802059713
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   7   │
-│    1    │ 'pizza'  │   0   │
-│    2    │ 'burger' │   6   │
+│    0    │ 'chips'  │   6   │
+│    1    │ 'pizza'  │   2   │
+│    2    │ 'burger' │   3   │
 └─────────┴──────────┴───────┘
 ```
 
@@ -50,5 +50,5 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner output
 Kanye West quote:
-I make awesome decisions in bike stores!!!
+Truth is my goal. Controversy is my gym. I'll do a hundred reps of controversy for a 6 pack of truth
 ```

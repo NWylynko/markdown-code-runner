@@ -1,12 +1,12 @@
 import { promises as fs } from "fs";
 import { spawn } from "child_process";
-import { createPackageJson, installDependencies } from "../utils/npm"
+import { createPackageJson, installDependencies, installDependency } from "../utils/npm"
 
 interface ExecutorOptions {
   dependencies: string[];
 }
 
-const JavascriptExecutor = async (
+const TypescriptExecutor = async (
   code: string,
   options: ExecutorOptions
 ): Promise<string> => {
@@ -14,20 +14,21 @@ const JavascriptExecutor = async (
   const randomFileName = Math.floor(Math.random() * 100000000);
 
   const TempFolderDir = `/tmp/${randomFileName}`;
-  const TempCodeFile = TempFolderDir + "/index.js";
+  const TempCodeFile = TempFolderDir + "/index.ts";
 
   // create the folder and write the file so it can be ran
   await fs.mkdir(TempFolderDir);
   await fs.writeFile(TempCodeFile, code);
 
   await createPackageJson(TempFolderDir);
+  await installDependency("ts-node", TempFolderDir)
   if (options?.dependencies) {
     await installDependencies(options.dependencies, TempFolderDir);
   }
 
   return new Promise((resolve) => {
     // run the process using the runtime and the file of code
-    const JSChildProcess = spawn("node", [TempCodeFile], {
+    const TSChildProcess = spawn("ts-node", [TempCodeFile], {
       cwd: TempFolderDir,
     });
 
@@ -35,17 +36,17 @@ const JavascriptExecutor = async (
     let output = "\n``` markdown-code-runner output\n";
 
     // take the output from the process and add it to the output string
-    JSChildProcess.stdout.on("data", (data) => {
+    TSChildProcess.stdout.on("data", (data) => {
       output += data;
     });
 
     // same for errors, if the process errors it will still be written to the markdown so consumers of whatever thing this github action is being used on will know if the example code is broken
-    JSChildProcess.stderr.on("data", (data) => {
+    TSChildProcess.stderr.on("data", (data) => {
       output += data;
     });
 
     // wait for the process to exit, either successfully or with an error code
-    JSChildProcess.on("close", (code) => {
+    TSChildProcess.on("close", (code) => {
       // exit code 0 means the process didn't error
       if (code === 0) {
         console.log(" ✔️", TempFolderDir, "finished successfully");
@@ -65,4 +66,4 @@ const JavascriptExecutor = async (
   });
 };
 
-export default JavascriptExecutor;
+export default TypescriptExecutor;
