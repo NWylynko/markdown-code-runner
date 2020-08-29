@@ -17,14 +17,24 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
+<<<<<<< HEAD
 10710.787802059713
+=======
+397.81940711185905
+>>>>>>> eb94de8582b6ca355fefe7ec0c3793c54f79fbe3
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
+<<<<<<< HEAD
 │    0    │ 'chips'  │   6   │
 │    1    │ 'pizza'  │   2   │
 │    2    │ 'burger' │   3   │
+=======
+│    0    │ 'chips'  │   1   │
+│    1    │ 'pizza'  │   2   │
+│    2    │ 'burger' │   6   │
+>>>>>>> eb94de8582b6ca355fefe7ec0c3793c54f79fbe3
 └─────────┴──────────┴───────┘
 ```
 
@@ -40,6 +50,29 @@ fetch('https://api.kanye.rest/')
   .catch(console.error)
 ```
 
+``` markdown-code-runner output
+internal/modules/cjs/loader.js:968
+  throw err;
+  ^
+
+Error: Cannot find module 'node-fetch'
+Require stack:
+- /tmp/81445224
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:965:15)
+    at Function.Module._load (internal/modules/cjs/loader.js:841:27)
+    at Module.require (internal/modules/cjs/loader.js:1025:19)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (/tmp/81445224:1:15)
+    at Module._compile (internal/modules/cjs/loader.js:1137:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1157:10)
+    at Module.load (internal/modules/cjs/loader.js:985:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:878:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [ '/tmp/81445224' ]
+}
+```
+
 <!-- markdown-code-runner
   {
     "dependencies": [
@@ -47,8 +80,11 @@ fetch('https://api.kanye.rest/')
     ]
   }
 -->
+<<<<<<< HEAD
 
 ``` markdown-code-runner output
 Kanye West quote:
 Truth is my goal. Controversy is my gym. I'll do a hundred reps of controversy for a 6 pack of truth
 ```
+=======
+>>>>>>> eb94de8582b6ca355fefe7ec0c3793c54f79fbe3
