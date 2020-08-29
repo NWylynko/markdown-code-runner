@@ -10,6 +10,11 @@ console.log('hello world from javascript')
 hello world from javascript
 ```
 
+Typescript
+``` ts
+console.log('hello world from typescript')
+```
+
 Python
 ``` py
 print('hello world from python')
