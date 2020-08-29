@@ -35,9 +35,9 @@ const genericExecutor = async (MDLanguage: string, code: string): Promise<string
     ls.on("close", (code) => {
       // exit code 0 means the process didn't error
       if (code === 0) {
-        console.log(" ", fileLocation, "finished successfully");
+        console.log(" ✔️", fileLocation, "finished successfully");
       } else {
-        console.warn(" ", fileLocation, "failed with error code", code);
+        console.warn(" ❌", fileLocation, "failed with error code", code);
       }
 
       // add ``` and a newline to the end of the output for the markdown

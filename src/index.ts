@@ -3,6 +3,7 @@ import util from "util";
 import glob from "glob";
 import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
+import JavascriptExecutor from "./Executors/javascript";
 
 // get al the languages supported by genericExecutor
 const supportedLanguages = Object.keys(languages);
@@ -34,6 +35,8 @@ export default async function run(folders: string) {
 
     const outputs = await Promise.all(
       parts.map(async (part) => {
+        const { options, optionsMarkdown } = getCodeOptions(part);
+
         // remove the rest of the string after the closing ```
         const codeWithLanguage = part.split("\n```\n")[0];
 
@@ -60,13 +63,27 @@ export default async function run(folders: string) {
         // join the array (without the language part at the start now) back together to be executed
         const code = codeLineArray.join("\n");
 
-        // run it through the generic executor to get the output
-        const output = await genericExecutor(MDLanguage, code);
+        const markdownCode =
+          "\n``` " + codeWithLanguage + "\n```\n" + optionsMarkdown;
+        try {
+          if (MDLanguage === "javascript" || MDLanguage === "js") {
+            return {
+              output: await JavascriptExecutor(code, options),
+              markdownCode,
+            };
+          } else {
+            // run it through the generic executor to get the output
+            const output = await genericExecutor(MDLanguage, code);
 
-        return {
-          output,
-          markdownCode: "\n``` " + codeWithLanguage + "\n```\n",
-        };
+            return {
+              output,
+              markdownCode,
+            };
+          }
+        } catch (error) {
+          console.error(' ❌', error);
+          return { error: true }
+        }
       })
     );
 
@@ -74,7 +91,12 @@ export default async function run(folders: string) {
     let newMarkdownFile = markdownFile;
 
     await Promise.all(
-      outputs.map(async ({ remove, markdownCode, output }: output) => {
+      outputs.map(async ({ remove, markdownCode, output, error }: output) => {
+        
+        // an error occurred with the executor, skip it
+        if (error) {
+          return;
+        }
         // if a chuck of code has 'markdown-code-runner output' it will be marked for removal because it will be replaced with an updated version
         if (remove) {
           // the old output gets removed
@@ -103,8 +125,29 @@ export default async function run(folders: string) {
 const shortenDir = (fileOrDir: string, baseDir: string): string =>
   fileOrDir.replace(baseDir, "");
 
+const getCodeOptions = (part: string) => {
+  // 'finds' and gets anything after '<!-- markdown-code-runner\n'
+  const markdownOptions = part.split("<!-- markdown-code-runner\n");
+
+  // if the length is 2 it means the options have been defined
+  if (markdownOptions.length === 2) {
+    // then gets everything before the closing -->
+    const optionsString = markdownOptions[1].split("\n-->")[0];
+
+    // use built in JSON.parse function to parse the json
+    const options = JSON.parse(optionsString);
+
+    return {
+      options,
+      optionsMarkdown: `\n<!-- markdown-code-runner\n${optionsString}\n-->\n`,
+    };
+  }
+  return { optionsMarkdown: "" };
+};
+
 interface output {
   output?: string;
   remove?: boolean;
   markdownCode?: string;
+  error?: boolean;
 }
