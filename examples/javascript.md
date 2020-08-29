@@ -40,6 +40,14 @@ fetch('https://api.kanye.rest/')
   .catch(console.error)
 ```
 
+<!-- markdown-code-runner
+  {
+    "dependencies": [
+      "node-fetch"
+    ]
+  }
+-->
+
 ``` markdown-code-runner output
 internal/modules/cjs/loader.js:968
   throw err;
@@ -62,14 +70,3 @@ Require stack:
   requireStack: [ '/tmp/9880727/index.js' ]
 }
 ```
-
-<!-- markdown-code-runner
-  {
-    "dependencies": [
-      "node-fetch"
-    ]
-  }
--->
-<<<<<<< HEAD
-=======
->>>>>>> eb94de8582b6ca355fefe7ec0c3793c54f79fbe3

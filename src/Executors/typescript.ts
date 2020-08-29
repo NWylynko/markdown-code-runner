@@ -1,6 +1,6 @@
 import { promises as fs } from "fs";
 import { spawn } from "child_process";
-import { createPackageJson, installDependencies, installDependency } from "../utils/npm"
+import { createPackageJson, installDependencies, installDependency, addScript } from "../utils/npm"
 
 interface ExecutorOptions {
   dependencies: string[];
@@ -21,14 +21,16 @@ const TypescriptExecutor = async (
   await fs.writeFile(TempCodeFile, code);
 
   await createPackageJson(TempFolderDir);
+  await addScript({ start: "ts-node index.ts"}, TempFolderDir)
   await installDependency("ts-node", TempFolderDir)
+  await installDependency("typescript", TempFolderDir)
   if (options?.dependencies) {
     await installDependencies(options.dependencies, TempFolderDir);
   }
 
   return new Promise((resolve) => {
     // run the process using the runtime and the file of code
-    const TSChildProcess = spawn("ts-node", [TempCodeFile], {
+    const TSChildProcess = spawn("npm", ["start"], {
       cwd: TempFolderDir,
     });
 
