@@ -8698,7 +8698,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 8134:
+/***/ 6681:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8707,6 +8707,9 @@ __webpack_require__.r(__webpack_exports__);
 
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __webpack_require__(5747);
+
+// EXTERNAL MODULE: external "child_process"
+var external_child_process_ = __webpack_require__(3129);
 
 // EXTERNAL MODULE: ./node_modules/@actions/github/lib/github.js
 var github = __webpack_require__(5438);
@@ -8721,9 +8724,6 @@ var glob_default = /*#__PURE__*/__webpack_require__.n(glob);
 
 // EXTERNAL MODULE: ./src/languages.json
 var languages = __webpack_require__(5153);
-
-// EXTERNAL MODULE: external "child_process"
-var external_child_process_ = __webpack_require__(3129);
 
 // CONCATENATED MODULE: ./src/genericExecutor.ts
 var __awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -8779,6 +8779,38 @@ const genericExecutor = (MDLanguage, code) => __awaiter(void 0, void 0, void 0, 
 });
 /* harmony default export */ const src_genericExecutor = (genericExecutor);
 
+// CONCATENATED MODULE: ./src/utils/npm.ts
+
+const createPackageJson = (FolderDir) => {
+    return new Promise((resolve, reject) => {
+        const childProcess = (0,external_child_process_.spawn)("npm", ["init", "-y"], { cwd: FolderDir });
+        childProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(`successfully initialized package.json`);
+            }
+            else {
+                reject(`failed to initialize package.json`);
+            }
+        });
+    });
+};
+const installDependency = (dependency, FolderDir) => {
+    return new Promise((resolve, reject) => {
+        const childProcess = (0,external_child_process_.spawn)("npm", ["i", dependency], { cwd: FolderDir });
+        childProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(`successfully installed ${dependency}`);
+            }
+            else {
+                reject(`failed to install ${dependency}`);
+            }
+        });
+    });
+};
+const installDependencies = (dependencies, FolderDir) => {
+    return Promise.all(dependencies.map((dependency) => installDependency(dependency, FolderDir)));
+};
+
 // CONCATENATED MODULE: ./src/Executors/javascript.ts
 var javascript_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -8789,6 +8821,7 @@ var javascript_awaiter = (undefined && undefined.__awaiter) || function (thisArg
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 const JavascriptExecutor = (code, options) => javascript_awaiter(void 0, void 0, void 0, function* () {
@@ -8836,36 +8869,68 @@ const JavascriptExecutor = (code, options) => javascript_awaiter(void 0, void 0,
         });
     });
 });
-const createPackageJson = (FolderDir) => {
-    return new Promise((resolve, reject) => {
-        const childProcess = (0,external_child_process_.spawn)("npm", ["init", "-y"], { cwd: FolderDir });
-        childProcess.on("close", (code) => {
-            if (code === 0) {
-                resolve(`successfully initialized package.json`);
-            }
-            else {
-                reject(`failed to initialize package.json`);
-            }
-        });
-    });
-};
-const installDependency = (dependency, FolderDir) => {
-    return new Promise((resolve, reject) => {
-        const childProcess = (0,external_child_process_.spawn)("npm", ["i", dependency], { cwd: FolderDir });
-        childProcess.on("close", (code) => {
-            if (code === 0) {
-                resolve(`successfully installed ${dependency}`);
-            }
-            else {
-                reject(`failed to install ${dependency}`);
-            }
-        });
-    });
-};
-const installDependencies = (dependencies, FolderDir) => {
-    return Promise.all(dependencies.map((dependency) => installDependency(dependency, FolderDir)));
-};
 /* harmony default export */ const javascript = (JavascriptExecutor);
+
+// CONCATENATED MODULE: ./src/Executors/typescript.ts
+var typescript_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+
+const TypescriptExecutor = (code, options) => typescript_awaiter(void 0, void 0, void 0, function* () {
+    // create a random number to use as a filename for the file to be saved to /tmp and ran from
+    const randomFileName = Math.floor(Math.random() * 100000000);
+    const TempFolderDir = `/tmp/${randomFileName}`;
+    const TempCodeFile = TempFolderDir + "/index.ts";
+    // create the folder and write the file so it can be ran
+    yield external_fs_.promises.mkdir(TempFolderDir);
+    yield external_fs_.promises.writeFile(TempCodeFile, code);
+    yield createPackageJson(TempFolderDir);
+    yield installDependency("ts-node", TempFolderDir);
+    if (options === null || options === void 0 ? void 0 : options.dependencies) {
+        yield installDependencies(options.dependencies, TempFolderDir);
+    }
+    return new Promise((resolve) => {
+        // run the process using the runtime and the file of code
+        const TSChildProcess = (0,external_child_process_.spawn)("ts-node", [TempCodeFile], {
+            cwd: TempFolderDir,
+        });
+        // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed
+        let output = "\n``` markdown-code-runner output\n";
+        // take the output from the process and add it to the output string
+        TSChildProcess.stdout.on("data", (data) => {
+            output += data;
+        });
+        // same for errors, if the process errors it will still be written to the markdown so consumers of whatever thing this github action is being used on will know if the example code is broken
+        TSChildProcess.stderr.on("data", (data) => {
+            output += data;
+        });
+        // wait for the process to exit, either successfully or with an error code
+        TSChildProcess.on("close", (code) => {
+            // exit code 0 means the process didn't error
+            if (code === 0) {
+                console.log(" ✔️", TempFolderDir, "finished successfully");
+            }
+            else {
+                console.warn(" ❌", TempFolderDir, "failed with error code", code);
+            }
+            // add ``` and a newline to the end of the output for the markdown
+            output += "```\n";
+            // remove the temp file
+            external_fs_.promises.rmdir(TempFolderDir, { recursive: true });
+            // resolve (aka return) the results so it can be added to the markdown file
+            resolve(output);
+        });
+    });
+});
+/* harmony default export */ const typescript = (TypescriptExecutor);
 
 // CONCATENATED MODULE: ./src/index.ts
 var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -8877,6 +8942,7 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -8932,6 +8998,12 @@ function run(folders) {
                     if (MDLanguage === "javascript" || MDLanguage === "js") {
                         return {
                             output: yield javascript(code, options),
+                            markdownCode,
+                        };
+                    }
+                    else if (MDLanguage === "typescript" || MDLanguage === "ts") {
+                        return {
+                            output: yield typescript(code, options),
                             markdownCode,
                         };
                     }
@@ -9023,7 +9095,7 @@ module.exports = eval("require")("encoding");
 /***/ ((module) => {
 
 "use strict";
-module.exports = JSON.parse("{\"js\":\"node\",\"javascript\":\"node\",\"py\":\"python3\",\"python\":\"python3\",\"bash\":\"bash\",\"sh\":\"sh\"}");
+module.exports = JSON.parse("{\"js\":\"node\",\"javascript\":\"node\",\"ts\":\"ts-node\",\"typescript\":\"ts-node\",\"py\":\"python3\",\"python\":\"python3\",\"bash\":\"bash\",\"sh\":\"sh\"}");
 
 /***/ }),
 
@@ -9217,6 +9289,6 @@ module.exports = require("zlib");
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(8134);
+/******/ 	return __webpack_require__(6681);
 /******/ })()
 ;
