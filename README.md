@@ -15,6 +15,14 @@ Typescript
 console.log('hello world from typescript')
 ```
 
+``` markdown-code-runner output
+
+> 50135771@1.0.0 start /tmp/50135771
+> ts-node index.ts
+
+hello world from typescript
+```
+
 Python
 ``` py
 print('hello world from python')
