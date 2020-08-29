@@ -8780,6 +8780,16 @@ const genericExecutor = (MDLanguage, code) => __awaiter(void 0, void 0, void 0, 
 /* harmony default export */ const src_genericExecutor = (genericExecutor);
 
 // CONCATENATED MODULE: ./src/utils/npm.ts
+var npm_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
 
 const createPackageJson = (FolderDir) => {
     return new Promise((resolve, reject) => {
@@ -8810,6 +8820,13 @@ const installDependency = (dependency, FolderDir) => {
 const installDependencies = (dependencies, FolderDir) => {
     return Promise.all(dependencies.map((dependency) => installDependency(dependency, FolderDir)));
 };
+const addScript = (scripts, FolderDir) => npm_awaiter(void 0, void 0, void 0, function* () {
+    const json = JSON.parse(yield external_fs_.promises.readFile(FolderDir + "/package.json", "utf8"));
+    Object.keys(scripts).map((scriptName) => {
+        json.scripts[scriptName] = scripts[scriptName];
+    });
+    yield external_fs_.promises.writeFile(FolderDir + '/package.json', JSON.stringify(json));
+});
 
 // CONCATENATED MODULE: ./src/Executors/javascript.ts
 var javascript_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
@@ -8893,13 +8910,15 @@ const TypescriptExecutor = (code, options) => typescript_awaiter(void 0, void 0,
     yield external_fs_.promises.mkdir(TempFolderDir);
     yield external_fs_.promises.writeFile(TempCodeFile, code);
     yield createPackageJson(TempFolderDir);
+    yield addScript({ start: "ts-node index.ts" }, TempFolderDir);
     yield installDependency("ts-node", TempFolderDir);
+    yield installDependency("typescript", TempFolderDir);
     if (options === null || options === void 0 ? void 0 : options.dependencies) {
         yield installDependencies(options.dependencies, TempFolderDir);
     }
     return new Promise((resolve) => {
         // run the process using the runtime and the file of code
-        const TSChildProcess = (0,external_child_process_.spawn)("ts-node", [TempCodeFile], {
+        const TSChildProcess = (0,external_child_process_.spawn)("npm", ["start"], {
             cwd: TempFolderDir,
         });
         // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed
