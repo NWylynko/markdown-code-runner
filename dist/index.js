@@ -8698,7 +8698,7 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
-/***/ 4718:
+/***/ 8134:
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -8763,10 +8763,10 @@ const genericExecutor = (MDLanguage, code) => __awaiter(void 0, void 0, void 0, 
         ls.on("close", (code) => {
             // exit code 0 means the process didn't error
             if (code === 0) {
-                console.log(" ", fileLocation, "finished successfully");
+                console.log(" ✔️", fileLocation, "finished successfully");
             }
             else {
-                console.warn(" ", fileLocation, "failed with error code", code);
+                console.warn(" ❌", fileLocation, "failed with error code", code);
             }
             // add ``` and a newline to the end of the output for the markdown
             output += "```\n";
@@ -8779,6 +8779,94 @@ const genericExecutor = (MDLanguage, code) => __awaiter(void 0, void 0, void 0, 
 });
 /* harmony default export */ const src_genericExecutor = (genericExecutor);
 
+// CONCATENATED MODULE: ./src/Executors/javascript.ts
+var javascript_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+
+
+const JavascriptExecutor = (code, options) => javascript_awaiter(void 0, void 0, void 0, function* () {
+    // create a random number to use as a filename for the file to be saved to /tmp and ran from
+    const randomFileName = Math.floor(Math.random() * 100000000);
+    const TempFolderDir = `/tmp/${randomFileName}`;
+    const TempCodeFile = TempFolderDir + "/index.js";
+    // create the folder and write the file so it can be ran
+    yield external_fs_.promises.mkdir(TempFolderDir);
+    yield external_fs_.promises.writeFile(TempCodeFile, code);
+    yield createPackageJson(TempFolderDir);
+    if (options === null || options === void 0 ? void 0 : options.dependencies) {
+        yield installDependencies(options.dependencies, TempFolderDir);
+    }
+    return new Promise((resolve) => {
+        // run the process using the runtime and the file of code
+        const JSChildProcess = (0,external_child_process_.spawn)("node", [TempCodeFile], {
+            cwd: TempFolderDir,
+        });
+        // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed
+        let output = "\n``` markdown-code-runner output\n";
+        // take the output from the process and add it to the output string
+        JSChildProcess.stdout.on("data", (data) => {
+            output += data;
+        });
+        // same for errors, if the process errors it will still be written to the markdown so consumers of whatever thing this github action is being used on will know if the example code is broken
+        JSChildProcess.stderr.on("data", (data) => {
+            output += data;
+        });
+        // wait for the process to exit, either successfully or with an error code
+        JSChildProcess.on("close", (code) => {
+            // exit code 0 means the process didn't error
+            if (code === 0) {
+                console.log(" ✔️", TempFolderDir, "finished successfully");
+            }
+            else {
+                console.warn(" ❌", TempFolderDir, "failed with error code", code);
+            }
+            // add ``` and a newline to the end of the output for the markdown
+            output += "```\n";
+            // remove the temp file
+            external_fs_.promises.rmdir(TempFolderDir, { recursive: true });
+            // resolve (aka return) the results so it can be added to the markdown file
+            resolve(output);
+        });
+    });
+});
+const createPackageJson = (FolderDir) => {
+    return new Promise((resolve, reject) => {
+        const childProcess = (0,external_child_process_.spawn)("npm", ["init", "-y"], { cwd: FolderDir });
+        childProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(`successfully initialized package.json`);
+            }
+            else {
+                reject(`failed to initialize package.json`);
+            }
+        });
+    });
+};
+const installDependency = (dependency, FolderDir) => {
+    return new Promise((resolve, reject) => {
+        const childProcess = (0,external_child_process_.spawn)("npm", ["i", dependency], { cwd: FolderDir });
+        childProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(`successfully installed ${dependency}`);
+            }
+            else {
+                reject(`failed to install ${dependency}`);
+            }
+        });
+    });
+};
+const installDependencies = (dependencies, FolderDir) => {
+    return Promise.all(dependencies.map((dependency) => installDependency(dependency, FolderDir)));
+};
+/* harmony default export */ const javascript = (JavascriptExecutor);
+
 // CONCATENATED MODULE: ./src/index.ts
 var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
@@ -8789,6 +8877,7 @@ var src_awaiter = (undefined && undefined.__awaiter) || function (thisArg, _argu
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+
 
 
 
@@ -8816,6 +8905,7 @@ function run(folders) {
             let parts = markdownFile.split(splitter);
             parts.shift();
             const outputs = yield Promise.all(parts.map((part) => src_awaiter(this, void 0, void 0, function* () {
+                const { options, optionsMarkdown } = getCodeOptions(part);
                 // remove the rest of the string after the closing ```
                 const codeWithLanguage = part.split("\n```\n")[0];
                 // split it by the new line so it can get the language from the first line
@@ -8837,16 +8927,35 @@ function run(folders) {
                 }
                 // join the array (without the language part at the start now) back together to be executed
                 const code = codeLineArray.join("\n");
-                // run it through the generic executor to get the output
-                const output = yield src_genericExecutor(MDLanguage, code);
-                return {
-                    output,
-                    markdownCode: "\n``` " + codeWithLanguage + "\n```\n",
-                };
+                const markdownCode = "\n``` " + codeWithLanguage + "\n```\n" + optionsMarkdown;
+                try {
+                    if (MDLanguage === "javascript" || MDLanguage === "js") {
+                        return {
+                            output: yield javascript(code, options),
+                            markdownCode,
+                        };
+                    }
+                    else {
+                        // run it through the generic executor to get the output
+                        const output = yield src_genericExecutor(MDLanguage, code);
+                        return {
+                            output,
+                            markdownCode,
+                        };
+                    }
+                }
+                catch (error) {
+                    console.error(' ❌', error);
+                    return { error: true };
+                }
             })));
             // copy the markdown to a new markdown file so it can be edited
             let newMarkdownFile = markdownFile;
-            yield Promise.all(outputs.map(({ remove, markdownCode, output }) => src_awaiter(this, void 0, void 0, function* () {
+            yield Promise.all(outputs.map(({ remove, markdownCode, output, error }) => src_awaiter(this, void 0, void 0, function* () {
+                // an error occurred with the executor, skip it
+                if (error) {
+                    return;
+                }
                 // if a chuck of code has 'markdown-code-runner output' it will be marked for removal because it will be replaced with an updated version
                 if (remove) {
                     // the old output gets removed
@@ -8869,6 +8978,22 @@ function run(folders) {
     });
 }
 const shortenDir = (fileOrDir, baseDir) => fileOrDir.replace(baseDir, "");
+const getCodeOptions = (part) => {
+    // 'finds' and gets anything after '<!-- markdown-code-runner\n'
+    const markdownOptions = part.split("<!-- markdown-code-runner\n");
+    // if the length is 2 it means the options have been defined
+    if (markdownOptions.length === 2) {
+        // then gets everything before the closing -->
+        const optionsString = markdownOptions[1].split("\n-->")[0];
+        // use built in JSON.parse function to parse the json
+        const options = JSON.parse(optionsString);
+        return {
+            options,
+            optionsMarkdown: `\n<!-- markdown-code-runner\n${optionsString}\n-->\n`,
+        };
+    }
+    return { optionsMarkdown: "" };
+};
 
 // CONCATENATED MODULE: ./src/githubAction.ts
 // import * as core from '@actions/core';
@@ -9092,6 +9217,6 @@ module.exports = require("zlib");
 /******/ 	// module exports must be returned from runtime so entry inlining is disabled
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(4718);
+/******/ 	return __webpack_require__(8134);
 /******/ })()
 ;
