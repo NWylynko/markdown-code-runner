@@ -23,6 +23,7 @@ console.log('hello world from typescript')
 hello world from typescript
 ```
 
+JSX
 ``` jsx
 import React from "react"
 
