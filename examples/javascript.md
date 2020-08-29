@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-7351.310011965956
+7600.16950019372
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
 │    0    │ 'chips'  │   6   │
-│    1    │ 'pizza'  │   6   │
-│    2    │ 'burger' │   5   │
+│    1    │ 'pizza'  │   0   │
+│    2    │ 'burger' │   6   │
 └─────────┴──────────┴───────┘
 ```
 
@@ -50,5 +50,5 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner output
 Kanye West quote:
-My dad got me a drone for Christmas
+Only free thinkers
 ```

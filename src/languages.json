@@ -3,6 +3,7 @@
     "javascript": "node",
     "ts": "ts-node",
     "typescript": "ts-node",
+    "jsx": "jsx",
     "py": "python3",
     "python": "python3",
     "bash": "bash",

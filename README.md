@@ -23,6 +23,14 @@ console.log('hello world from typescript')
 hello world from typescript
 ```
 
+``` jsx
+import React from "react"
+
+const App = () => <p>hello world from jsx</p>
+
+export default App
+```
+
 Python
 ``` py
 print('hello world from python')

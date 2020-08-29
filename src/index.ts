@@ -5,6 +5,7 @@ import languages from "./languages.json";
 import genericExecutor from "./genericExecutor";
 import JavascriptExecutor from "./Executors/javascript";
 import TypescriptExecutor from "./Executors/typescript";
+import JSXExecutor from "./Executors/jsx";
 
 // get al the languages supported by genericExecutor
 const supportedLanguages = Object.keys(languages);
@@ -35,7 +36,7 @@ export default async function run(folders: string) {
     parts.shift();
 
     const outputs = await Promise.all(
-      parts.map(async (part) => {
+      parts.map(async (part, index) => {
         const { options, optionsMarkdown } = getCodeOptions(part);
 
         // remove the rest of the string after the closing ```
@@ -77,6 +78,12 @@ export default async function run(folders: string) {
               output: await TypescriptExecutor(code, options),
               markdownCode,
             };
+          } else if (MDLanguage === "jsx") {
+            return {
+              output: await JSXExecutor(code, index, path, options),
+              markdownCode
+              
+            };
           } else {
             // run it through the generic executor to get the output
             const output = await genericExecutor(MDLanguage, code);
@@ -95,6 +102,7 @@ export default async function run(folders: string) {
 
     // copy the markdown to a new markdown file so it can be edited
     let newMarkdownFile = markdownFile;
+    newMarkdownFile = removeStaleImages(newMarkdownFile)
 
     await Promise.all(
       outputs.map(async ({ remove, markdownCode, output, error }: output) => {
@@ -141,7 +149,7 @@ const getCodeOptions = (part: string) => {
     const optionsString = markdownOptions[1].split("\n-->")[0];
 
     // use built in JSON.parse function to parse the json
-    const options = JSON.parse(optionsString);
+    const options: ExecutorOptions = JSON.parse(optionsString);
 
     return {
       options,
@@ -151,9 +159,28 @@ const getCodeOptions = (part: string) => {
   return { optionsMarkdown: "" };
 };
 
+const removeStaleImages = (markdown: string) => {
+  const open = '\n<!-- markdown-code-runner image-start -->\n'
+  const close = '\n<!-- markdown-code-runner image-end -->\n'
+  const parts = markdown.split(open)
+  if (parts.length > 1) {
+    parts.shift()
+    parts.forEach(part => {
+      const oldOutput = part.split(close)[0]
+      markdown = markdown.replace(open + oldOutput + close, '')
+    })
+  }
+  return markdown
+}
+
 interface output {
   output?: string;
   remove?: boolean;
   markdownCode?: string;
   error?: boolean;
+}
+
+
+export interface ExecutorOptions {
+  dependencies: string[];
 }
