@@ -23,8 +23,8 @@ installDependenciesRunner.on("close", (code) => {
 })
 
 const runAction = () => {
-  const runner = spawn("node", ["./dist/githubAction"])
-  runner.stdout.on("data", process.stdout.write)
-  runner.stderr.on("data", process.stderr.write)
-  runner.on("close", process.exit)
+  const runner = spawn("node", ["./dist/githubAction.js"])
+  runner.stdout.on("data", data => process.stdout.write(data))
+  runner.stderr.on("data", data => process.stderr.write(data))
+  runner.on("close", code => process.exit(code))
 }
