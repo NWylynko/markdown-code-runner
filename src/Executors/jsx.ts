@@ -86,7 +86,7 @@ const JSXExecutor = async (
     });
 
     // wait for the process to exit, either successfully or with an error code
-    JSXChildProcess.on("close", (code) => {
+    JSXChildProcess.on("exit", (code) => {
       // exit code 0 means the process didn't error
       if (code === 0 || code === null) {
         console.log(" ✔️", TempFolderDir, "finished successfully");
