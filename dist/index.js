@@ -70,10 +70,13 @@ async function run(folders) {
                     };
                 }
                 else if (MDLanguage === "jsx") {
-                    return {
-                        output: await jsx_1.default(code, index, path, options),
-                        markdownCode
-                    };
+                    try {
+                        const output = await jsx_1.default(code, index, path, options);
+                        return { output, markdownCode };
+                    }
+                    catch (error) {
+                        return { error };
+                    }
                 }
                 else {
                     // run it through the generic executor to get the output
@@ -95,6 +98,7 @@ async function run(folders) {
         await Promise.all(outputs.map(async ({ remove, markdownCode, output, error }) => {
             // an error occurred with the executor, skip it
             if (error) {
+                console.error(error);
                 return;
             }
             // if a chuck of code has 'markdown-code-runner output' it will be marked for removal because it will be replaced with an updated version
