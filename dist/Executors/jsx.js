@@ -67,14 +67,15 @@ const JSXExecutor = async (code, index, path, options) => {
             }
             if (data.includes("Built")) {
                 try {
-                    await captureWebPageScreenShot(port, TempFolderDir + '/output.png');
+                    await captureWebPageScreenShot(port, TempFolderDir + "/output.png");
                     console.log("captured screenshot");
-                    const newPath = path.slice(0, -3) + '.' + index + '.png';
-                    await fs_1.promises.rename(TempFolderDir + '/output.png', newPath);
-                    output += `\n![rendered jsx](./${newPath.split('/').pop()})\n`;
+                    const newPath = path.slice(0, -3) + "." + index + ".png";
+                    await fs_1.promises.rename(TempFolderDir + "/output.png", newPath);
+                    output += `\n![rendered jsx](./${newPath.split("/").pop()})\n`;
                 }
                 catch (error) {
                     output += "\n```\n" + error + "\n```\n";
+                    console.error(error);
                 }
                 console.log("exiting");
                 JSXChildProcess.kill("SIGTERM");
@@ -110,23 +111,29 @@ const JSXExecutor = async (code, index, path, options) => {
     });
 };
 const captureWebPageScreenShot = async (port, TempFile) => {
-    const browser = await puppeteer_1.default.launch({ headless: true });
-    const page = await browser.newPage();
-    await page.goto(`http://localhost:${port}`, { waitUntil: "networkidle0" });
-    console.log("loaded page");
-    const dimensions = await page.evaluate(() => {
-        return {
-            // plus 16 for the 8px margin from the body tag
-            width: document.getElementById('app').offsetWidth + 16,
-            height: document.getElementById('app').offsetHeight + 16
-        };
-    });
-    await page.screenshot({
-        path: TempFile,
-        clip: { x: 0, y: 0, ...dimensions }
-    });
-    console.log("screenshoted");
-    await browser.close();
-    console.log("closed browser");
+    try {
+        const browser = await puppeteer_1.default.launch({ headless: true });
+        const page = await browser.newPage();
+        await page.goto(`http://localhost:${port}`, { waitUntil: "networkidle0" });
+        console.log("loaded page");
+        const dimensions = await page.evaluate(() => {
+            return {
+                // plus 16 for the 8px margin from the body tag
+                width: document.getElementById("app").offsetWidth + 16,
+                height: document.getElementById("app").offsetHeight + 16,
+            };
+        });
+        await page.screenshot({
+            path: TempFile,
+            clip: { x: 0, y: 0, ...dimensions },
+        });
+        console.log("screenshoted");
+        await browser.close();
+        console.log("closed browser");
+        return true;
+    }
+    catch (error) {
+        throw new Error(`failed to screenshot, error: ${error}`);
+    }
 };
 exports.default = JSXExecutor;
