@@ -112,7 +112,7 @@ const JSXExecutor = async (code, index, path, options) => {
 };
 const captureWebPageScreenShot = async (port, TempFile) => {
     try {
-        const browser = await puppeteer_1.default.launch({ headless: true });
+        const browser = await puppeteer_1.default.launch();
         const page = await browser.newPage();
         await page.goto(`http://localhost:${port}`, { waitUntil: "networkidle0" });
         console.log("loaded page");
@@ -127,6 +127,7 @@ const captureWebPageScreenShot = async (port, TempFile) => {
             path: TempFile,
             // clip: { x: 0, y: 0, ...dimensions },
             clip: { x: 0, y: 0, width: 300, height: 300 },
+            omitBackground: true
         });
         console.log("screenshoted");
         await browser.close();

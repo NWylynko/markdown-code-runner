@@ -136,7 +136,7 @@ const JSXExecutor = async (
 
 const captureWebPageScreenShot = async (port: string, TempFile: string) => {
   try {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch();
     const page = await browser.newPage();
     await page.goto(`http://localhost:${port}`, { waitUntil: "networkidle0" });
 
@@ -154,6 +154,7 @@ const captureWebPageScreenShot = async (port: string, TempFile: string) => {
       path: TempFile,
       // clip: { x: 0, y: 0, ...dimensions },
       clip: { x: 0, y: 0, width: 300, height: 300 },
+      omitBackground: true
     });
 
     console.log("screenshoted");
