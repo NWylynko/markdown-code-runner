@@ -25,14 +25,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import * as core from '@actions/core';
 const github = __importStar(require("@actions/github"));
 const index_1 = __importDefault(require("./index"));
-const runAction = () => {
-    // get the name of the repo this action is running in
-    const fullRepo = github.context.payload.repository.full_name;
-    const repo = fullRepo.split("/")[1];
-    // only want to run the code in the repo this is being run on
-    const repoDir = `/home/runner/work/${repo}/${repo}`;
-    // all the markdown files in the repoDir
-    const folders = `${repoDir}/**/*.md`;
-    index_1.default(folders);
-};
-exports.default = runAction;
+// get the name of the repo this action is running in
+const fullRepo = github.context.payload.repository.full_name;
+const repo = fullRepo.split("/")[1];
+// only want to run the code in the repo this is being run on
+const repoDir = `/home/runner/work/${repo}/${repo}`;
+// all the markdown files in the repoDir
+const folders = `${repoDir}/**/*.md`;
+index_1.default(folders);
