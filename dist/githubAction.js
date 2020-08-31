@@ -31,5 +31,5 @@ const repo = fullRepo.split("/")[1];
 // only want to run the code in the repo this is being run on
 const repoDir = `/home/runner/work/${repo}/${repo}`;
 // all the markdown files in the repoDir
-const folders = `${repoDir}/**/*.md`;
+const folders = `${repoDir}/examples/jsx.md`;
 index_1.default(folders);
