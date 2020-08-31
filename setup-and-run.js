@@ -1,5 +1,5 @@
 const { spawn } = require("child_process")
-const runAction = require("./dist/index")
+const runAction = require("./dist/githubAction")
 
 const installDependenciesRunner = spawn("yarn")
 

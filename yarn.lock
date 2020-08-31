@@ -151,11 +151,6 @@
   dependencies:
     "@types/node" "*"
 
-"@vercel/ncc@^0.24.0":
-  version "0.24.0"
-  resolved "https://registry.yarnpkg.com/@vercel/ncc/-/ncc-0.24.0.tgz#a2e8783a185caa99b5d8961a57dfc9665de16296"
-  integrity sha512-crqItMcIwCkvdXY/V3/TzrHJQx6nbIaRqE1cOopJhgGX6izvNov40SmD//nS5flfEvdK54YGjwVVq+zG6crjOg==
-
 agent-base@5:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/agent-base/-/agent-base-5.1.1.tgz#e8fb3f242959db44d63be665db7a8e739537a32c"
