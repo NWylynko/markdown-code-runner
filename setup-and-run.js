@@ -26,5 +26,5 @@ const runAction = () => {
   const runner = spawn("node", ["./dist/githubAction"])
   runner.stdout.on("data", process.stdout.write)
   runner.stderr.on("data", process.stderr.write)
-  runner.close("data", process.exit)
+  runner.on("close", process.exit)
 }
