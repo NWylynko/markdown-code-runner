@@ -17,7 +17,8 @@ const supportedLanguages = Object.keys(languages_json_1.default);
 const globAsync = util_1.default.promisify(glob_1.default);
 async function run(folders) {
     //get the markdown files
-    const files = await globAsync(folders);
+    const filesUnFiltered = await globAsync(folders);
+    const files = filesUnFiltered.filter(file => !file.includes("node_modules"));
     if (files.length === 0) {
         console.error("no markdown files found :(");
         process.exit(1);
