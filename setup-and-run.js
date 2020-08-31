@@ -13,18 +13,27 @@ const installDependenciesRunner = spawn("yarn")
 //   console.log(data)
 // })
 
-installDependenciesRunner.on("close", (code) => {
+installDependenciesRunner.on("close", async (code) => {
   if (code === 0 || code === null ) {
     console.log("installed dependencies")
-    runAction()
+    const exitCode = await runAction()
+    process.exit(exitCode)
   } else {
     console.log("failed to install dependencies")
   }
 })
 
 const runAction = () => {
-  const runner = spawn("node", ["./dist/githubAction.js"])
-  runner.stdout.on("data", data => console.log(data))
-  runner.stderr.on("data", data => console.error(data))
-  runner.on("close", code => process.exit(code))
+  return new Promise((resolve, reject) => {
+    const runner = spawn("node", ["./dist/dev.js"])
+    runner.stdout.on("data", data => process.stdout.write(data))
+    runner.stderr.on("data", data => process.stderr.write(data))
+    runner.on("close", code => { 
+      if (code === 0 || code === null) {
+        resolve(code)
+      } else {
+        reject(code)
+      } 
+    })
+  })
 }
