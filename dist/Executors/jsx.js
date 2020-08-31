@@ -57,10 +57,15 @@ const JSXExecutor = async (code, index, path, options) => {
                 port = data.split("localhost:")[1].split(/[\n ]/)[0];
             }
             if (data.includes("Built")) {
-                await captureWebPageScreenShot(port, TempFolderDir + '/output.png');
-                const newPath = path.slice(0, -3) + '.' + index + '.png';
-                await fs_1.promises.rename(TempFolderDir + '/output.png', newPath);
-                output += `\n![rendered jsx](./${newPath.split('/').pop()})\n`;
+                try {
+                    await captureWebPageScreenShot(port, TempFolderDir + '/output.png');
+                    const newPath = path.slice(0, -3) + '.' + index + '.png';
+                    await fs_1.promises.rename(TempFolderDir + '/output.png', newPath);
+                    output += `\n![rendered jsx](./${newPath.split('/').pop()})\n`;
+                }
+                catch (error) {
+                    output += "\n```\n" + error + "\n```\n";
+                }
                 JSXChildProcess.kill("SIGTERM");
             }
         });
