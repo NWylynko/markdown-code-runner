@@ -61,8 +61,7 @@ const JSXExecutor = async (code, index, path, options) => {
                 const newPath = path.slice(0, -3) + '.' + index + '.png';
                 await fs_1.promises.rename(TempFolderDir + '/output.png', newPath);
                 output += `\n![rendered jsx](./${newPath.split('/').pop()})\n`;
-                console.log('done, killing');
-                JSXChildProcess.kill(0);
+                JSXChildProcess.kill("SIGTERM");
             }
         });
         // same for errors, if the process errors it will still be written to the markdown so consumers of whatever thing this github action is being used on will know if the example code is broken

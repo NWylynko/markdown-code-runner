@@ -75,8 +75,7 @@ const JSXExecutor = async (
         const newPath = path.slice(0, -3) + '.' + index + '.png'
         await fs.rename(TempFolderDir + '/output.png', newPath)
         output += `\n![rendered jsx](./${newPath.split('/').pop()})\n`
-        console.log('done, killing')
-        JSXChildProcess.kill(0);
+        JSXChildProcess.kill("SIGTERM");
       }
     });
 
