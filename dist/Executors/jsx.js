@@ -87,7 +87,7 @@ const JSXExecutor = async (code, index, path, options) => {
     });
 };
 const captureWebPageScreenShot = async (port, TempFile) => {
-    const browser = await puppeteer_1.default.launch();
+    const browser = await puppeteer_1.default.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(`http://localhost:${port}`);
     const dimensions = await page.evaluate(() => {
