@@ -1,6 +1,6 @@
 {
   "name": "markdown-code-runner",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "description": "github action to run code in a markdown file and append the output to the markdown file",
   "main": "dist/index.js",
   "repository": "https://github.com/NWylynko/markdown-code-runner.git",

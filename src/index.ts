@@ -15,7 +15,9 @@ const globAsync = util.promisify(glob);
 
 export default async function run(folders: string) {
   //get the markdown files
-  const files = await globAsync(folders);
+  const filesUnFiltered = await globAsync(folders);
+
+  const files = filesUnFiltered.filter(file => !file.includes("node_modules"))
 
   if (files.length === 0) {
     console.error("no markdown files found :(");
