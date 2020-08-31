@@ -116,6 +116,7 @@ async function run(folders) {
         fs_1.promises.writeFile(path, newMarkdownFile);
         console.log("written", shortenDir(path, folders), ":)");
     });
+    console.log("written all files");
 }
 exports.default = run;
 const shortenDir = (fileOrDir, baseDir) => fileOrDir.replace(baseDir, "");

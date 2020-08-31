@@ -136,6 +136,8 @@ export default async function run(folders: string) {
 
     console.log("written", shortenDir(path, folders), ":)");
   });
+
+  console.log("written all files")
 }
 
 const shortenDir = (fileOrDir: string, baseDir: string): string =>
