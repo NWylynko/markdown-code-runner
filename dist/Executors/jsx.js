@@ -89,7 +89,7 @@ const JSXExecutor = async (code, index, path, options) => {
 const captureWebPageScreenShot = async (port, TempFile) => {
     const browser = await puppeteer_1.default.launch({ headless: true });
     const page = await browser.newPage();
-    await page.goto(`http://localhost:${port}`);
+    await page.goto(`http://localhost:${port}`, { waitUntil: "networkidle0" });
     const dimensions = await page.evaluate(() => {
         return {
             // plus 16 for the 8px margin from the body tag

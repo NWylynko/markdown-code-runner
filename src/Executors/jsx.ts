@@ -108,7 +108,7 @@ const JSXExecutor = async (
 const captureWebPageScreenShot = async (port: string, TempFile: string) => {
   const browser = await puppeteer.launch({ headless: true })
   const page = await browser.newPage()
-  await page.goto(`http://localhost:${port}`)
+  await page.goto(`http://localhost:${port}`, { waitUntil: "networkidle0" })
 
   const dimensions = await page.evaluate(() => {
     return {
