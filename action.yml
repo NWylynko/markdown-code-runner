@@ -5,4 +5,4 @@ branding:
   color: 'red'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'setup-and-run.js'

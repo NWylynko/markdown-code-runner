@@ -1,7 +1,6 @@
 import { promises as fs } from "fs";
 import { spawn } from "child_process";
 import puppeteer from "puppeteer"
-import shell from "shelljs";
 import {
   createPackageJson,
   installDependencies,
@@ -74,7 +73,7 @@ const JSXExecutor = async (
       if (data.includes("Built")) {
         await captureWebPageScreenShot(port, TempFolderDir + '/output.png')
         const newPath = path.slice(0, -3) + '.' + index + '.png'
-        shell.cp(TempFolderDir + '/output.png', newPath)
+        await fs.rename(TempFolderDir + '/output.png', newPath)
         output += `\n![rendered jsx](./${newPath.split('/').pop()})\n`
         console.log('done, killing')
         JSXChildProcess.kill();
