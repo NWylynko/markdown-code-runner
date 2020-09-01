@@ -115,17 +115,17 @@ const captureWebPageScreenShot = async (port, TempFile) => {
         const page = await browser.newPage();
         await page.goto(`http://localhost:${port}`, { waitUntil: "networkidle0" });
         console.log("loaded page");
-        // const dimensions = await page.evaluate(() => {
-        //   return {
-        //     // plus 16 for the 8px margin from the body tag
-        //     width: document.getElementById("app").offsetWidth + 16,
-        //     height: document.getElementById("app").offsetHeight + 16,
-        //   };
-        // });
+        const dimensions = await page.evaluate(() => {
+            return {
+                // plus 16 for the 8px margin from the body tag
+                width: document.getElementById("app").offsetWidth + 16,
+                height: document.getElementById("app").offsetHeight + 16,
+            };
+        });
         await page.screenshot({
             path: TempFile,
-            // clip: { x: 0, y: 0, ...dimensions },
-            clip: { x: 0, y: 0, width: 300, height: 300 },
+            clip: { x: 0, y: 0, ...dimensions },
+            // clip: { x: 0, y: 0, width: 300, height: 300 },
             omitBackground: true
         });
         console.log("screenshoted");
