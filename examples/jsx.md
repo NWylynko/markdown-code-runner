@@ -28,3 +28,9 @@ const App = () => {
 
 export default App
 ```
+
+<!-- markdown-code-runner image-start -->
+
+![rendered jsx](./jsx.1.png)
+
+<!-- markdown-code-runner image-end -->

@@ -10,7 +10,7 @@ console.log(hey("nick"));
 
 ``` markdown-code-runner output
 
-> 50514594@1.0.0 start /tmp/50514594
+> 56530794@1.0.0 start /tmp/56530794
 > ts-node index.ts
 
 Hello, nick
