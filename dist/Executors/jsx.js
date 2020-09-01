@@ -104,8 +104,8 @@ const buildJSX = (TempFolderDir) => {
     return new Promise(async (resolve, reject) => {
         await npm_1.addScript({ build: "parcel build index.html" }, TempFolderDir);
         const build = child_process_1.spawn("npm", ['run', 'build'], { cwd: TempFolderDir });
-        build.stdout.on("data", data => console.log(data.toString()));
-        build.stderr.on("data", data => console.error(data.toString()));
+        // build.stdout.on("data", data => console.log(data.toString()))
+        // build.stderr.on("data", data => console.error(data.toString()))
         build.on("close", code => {
             if (code === 0 || code === null) {
                 resolve(code);
