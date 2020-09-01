@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-11116.893459733383
+7912.156946659439
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   3   │
-│    1    │ 'pizza'  │   1   │
-│    2    │ 'burger' │   4   │
+│    0    │ 'chips'  │   2   │
+│    1    │ 'pizza'  │   2   │
+│    2    │ 'burger' │   5   │
 └─────────┴──────────┴───────┘
 ```
 
@@ -50,5 +50,5 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner output
 Kanye West quote:
-I feel like I'm too busy writing history to read it.
+If I don't scream, if I don't say something then no one's going to say anything.
 ```
