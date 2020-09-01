@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-17456.77106742658
+4534.0431923018305
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   5   │
+│    0    │ 'chips'  │   8   │
 │    1    │ 'pizza'  │   3   │
-│    2    │ 'burger' │   7   │
+│    2    │ 'burger' │   0   │
 └─────────┴──────────┴───────┘
 ```
 
@@ -50,5 +50,5 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner output
 Kanye West quote:
-People only get jealous when they care.
+I still think I am the greatest.
 ```
