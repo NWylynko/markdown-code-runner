@@ -11,6 +11,6 @@ const repo = fullRepo.split("/")[1];
 const repoDir = `/home/runner/work/${repo}/${repo}`;
 
 // all the markdown files in the repoDir
-const folders = `${repoDir}/examples/jsx.md`;
+const folders = `${repoDir}/**/*.md`;
 
 run(folders)
