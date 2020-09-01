@@ -31,9 +31,16 @@ export const installDependencies = (
   dependencies: string[],
   FolderDir: string
 ) => {
-  return Promise.all(
-    dependencies.map((dependency) => installDependency(dependency, FolderDir))
-  );
+  return new Promise((resolve, reject) => {
+    const childProcess = spawn("npm", ["i", ...dependencies], { cwd: FolderDir });
+    childProcess.on("close", (code) => {
+      if (code === 0) {
+        resolve(`successfully installed ${dependencies}`);
+      } else {
+        reject(`failed to install ${dependencies}`);
+      }
+    });
+  });
 };
 
 export const addScript = async (scripts: { [x: string]: string; }, FolderDir: string) => {

@@ -30,7 +30,17 @@ exports.installDependency = (dependency, FolderDir) => {
     });
 };
 exports.installDependencies = (dependencies, FolderDir) => {
-    return Promise.all(dependencies.map((dependency) => exports.installDependency(dependency, FolderDir)));
+    return new Promise((resolve, reject) => {
+        const childProcess = child_process_1.spawn("npm", ["i", ...dependencies], { cwd: FolderDir });
+        childProcess.on("close", (code) => {
+            if (code === 0) {
+                resolve(`successfully installed ${dependencies}`);
+            }
+            else {
+                reject(`failed to install ${dependencies}`);
+            }
+        });
+    });
 };
 exports.addScript = async (scripts, FolderDir) => {
     const json = JSON.parse(await fs_1.promises.readFile(FolderDir + "/package.json", "utf8"));
