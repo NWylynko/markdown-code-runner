@@ -8,7 +8,6 @@ const child_process_1 = require("child_process");
 const puppeteer_1 = __importDefault(require("puppeteer"));
 const npm_1 = require("../utils/npm");
 const JSXExecutor = async (code, index, path, options) => {
-    console.log("started jsx");
     // create a random number to use as a filename for the file to be saved to /tmp and ran from
     const randomFileName = Math.floor(Math.random() * 100000000);
     const TempFolderDir = `/tmp/${randomFileName}`;
@@ -16,13 +15,11 @@ const JSXExecutor = async (code, index, path, options) => {
     // create the folder and write the file so it can be ran
     await fs_1.promises.mkdir(TempFolderDir);
     await fs_1.promises.writeFile(TempCodeFile, code);
-    console.log("written code file");
     await npm_1.createPackageJson(TempFolderDir);
     await npm_1.installDependencies(["react", "react-dom", "parcel-bundler", "express"], TempFolderDir);
     if (options === null || options === void 0 ? void 0 : options.dependencies) {
         await npm_1.installDependencies(options.dependencies, TempFolderDir);
     }
-    console.log("installed dependencies");
     const html = `
     <style>
       body {
@@ -49,15 +46,12 @@ const JSXExecutor = async (code, index, path, options) => {
     const server = app.listen(0, () => console.log('localhost:' + server.address().port));
   `;
     await fs_1.promises.writeFile(TempFolderDir + "/express.js", expressApp);
-    console.log("write supporting files");
     await buildJSX(TempFolderDir);
     return new Promise((resolve, reject) => {
-        console.log("returning promise");
         // run the process using the runtime and the file of code
         const JSXChildProcess = child_process_1.spawn("node", ["express.js"], {
             cwd: TempFolderDir,
         });
-        console.log("spawning process", JSXChildProcess.pid);
         let port;
         let error = false;
         // start the output with <!-- --> so the image can be replaced later if needed
@@ -65,21 +59,16 @@ const JSXExecutor = async (code, index, path, options) => {
         // take the output from the process and add it to the output string
         JSXChildProcess.stdout.on("data", async (data) => {
             data = data.toString();
-            console.log(data);
             if (data.includes("localhost")) {
                 port = data.split("localhost:")[1].split(/[\n ]/)[0];
-                console.log("got port");
                 try {
                     const newPath = path.slice(0, -3) + "." + index + ".png";
                     await captureWebPageScreenShot(port, newPath);
-                    console.log("captured screenshot");
                     output += `\n![rendered jsx](./${newPath.split("/").pop()})\n`;
                 }
                 catch (error) {
                     output += "\n```\n" + error + "\n```\n";
-                    console.error(error);
                 }
-                console.log("exiting");
                 JSXChildProcess.kill("SIGKILL");
             }
         });
@@ -89,13 +78,8 @@ const JSXExecutor = async (code, index, path, options) => {
             output += data.toString();
             error = true;
         });
-        JSXChildProcess.on("close", (code, signal) => console.log(`closed`, { code, signal }));
-        JSXChildProcess.on("disconnect", () => console.log(`disconnect`));
-        JSXChildProcess.on("error", (err) => console.log(`disconnect`, { err }));
-        JSXChildProcess.on("message", (message) => console.log(`message`, { message }));
         // wait for the process to exit, either successfully or with an error code
         JSXChildProcess.on("exit", async (code, signal) => {
-            console.log("process exited", { code, signal });
             // exit code 0 means the process didn't error
             if (code === 0 || code === null) {
                 console.log(" ✔️", TempFolderDir, "finished successfully");
@@ -105,10 +89,8 @@ const JSXExecutor = async (code, index, path, options) => {
             }
             // add ``` and a newline to the end of the output for the markdown
             output += "\n<!-- markdown-code-runner image-end -->\n";
-            console.log('cleaning up');
             // remove the temp folder
             await fs_1.promises.rmdir(TempFolderDir, { recursive: true });
-            console.log('cleaned up');
             if (error) {
                 reject(output);
             }
@@ -139,7 +121,6 @@ const captureWebPageScreenShot = async (port, TempFile) => {
         const browser = await puppeteer_1.default.launch();
         const page = await browser.newPage();
         await page.goto(`http://localhost:${port}/index.html`, { waitUntil: "networkidle0" });
-        console.log("loaded page");
         const dimensions = await page.evaluate(() => {
             return {
                 // plus 16 for the 8px margin from the body tag
@@ -152,9 +133,7 @@ const captureWebPageScreenShot = async (port, TempFile) => {
             clip: { x: 0, y: 0, ...dimensions },
             omitBackground: true
         });
-        console.log("screenshoted");
         await browser.close();
-        console.log("closed browser");
         return true;
     }
     catch (error) {

@@ -15,7 +15,6 @@ const JSXExecutor = async (
   path: string,
   options?: ExecutorOptions
 ): Promise<string> => {
-  console.log("started jsx");
 
   // create a random number to use as a filename for the file to be saved to /tmp and ran from
   const randomFileName = Math.floor(Math.random() * 100000000);
@@ -27,15 +26,11 @@ const JSXExecutor = async (
   await fs.mkdir(TempFolderDir);
   await fs.writeFile(TempCodeFile, code);
 
-  console.log("written code file");
-
   await createPackageJson(TempFolderDir);
   await installDependencies(["react", "react-dom", "parcel-bundler", "express"], TempFolderDir);
   if (options?.dependencies) {
     await installDependencies(options.dependencies, TempFolderDir);
   }
-
-  console.log("installed dependencies");
 
   const html = `
     <style>
@@ -66,19 +61,13 @@ const JSXExecutor = async (
   `;
   await fs.writeFile(TempFolderDir + "/express.js", expressApp);
 
-  console.log("write supporting files");
-
   await buildJSX(TempFolderDir)
 
   return new Promise((resolve, reject) => {
-    console.log("returning promise");
-
     // run the process using the runtime and the file of code
     const JSXChildProcess = spawn("node", ["express.js"], {
       cwd: TempFolderDir,
     });
-
-    console.log("spawning process", JSXChildProcess.pid);
 
     let port: string;
     let error: boolean = false;
@@ -89,21 +78,16 @@ const JSXExecutor = async (
     // take the output from the process and add it to the output string
     JSXChildProcess.stdout.on("data", async (data) => {
       data = data.toString();
-      console.log(data);
       if (data.includes("localhost")) {
         port = data.split("localhost:")[1].split(/[\n ]/)[0];
-        console.log("got port");
 
         try {
           const newPath = path.slice(0, -3) + "." + index + ".png";
           await captureWebPageScreenShot(port, newPath);
-          console.log("captured screenshot");
           output += `\n![rendered jsx](./${newPath.split("/").pop()})\n`;
         } catch (error) {
           output += "\n```\n" + error + "\n```\n";
-          console.error(error)
         }
-        console.log("exiting");
         JSXChildProcess.kill("SIGKILL");
       }
     });
@@ -115,14 +99,8 @@ const JSXExecutor = async (
       error = true;
     });
 
-    JSXChildProcess.on("close", (code, signal) => console.log(`closed`, {code, signal}))
-    JSXChildProcess.on("disconnect", () => console.log(`disconnect`))
-    JSXChildProcess.on("error", (err) => console.log(`disconnect`, {err}))
-    JSXChildProcess.on("message", (message) => console.log(`message`, {message}))
-
     // wait for the process to exit, either successfully or with an error code
     JSXChildProcess.on("exit", async (code, signal) => {
-      console.log("process exited", {code, signal});
       // exit code 0 means the process didn't error
       if (code === 0 || code === null) {
         console.log(" ✔️", TempFolderDir, "finished successfully");
@@ -133,12 +111,8 @@ const JSXExecutor = async (
       // add ``` and a newline to the end of the output for the markdown
       output += "\n<!-- markdown-code-runner image-end -->\n";
 
-      console.log('cleaning up')
-
       // remove the temp folder
       await fs.rmdir(TempFolderDir, { recursive: true });
-
-      console.log('cleaned up')
 
       if (error) {
         reject(output);
@@ -174,8 +148,6 @@ const captureWebPageScreenShot = async (port: string, TempFile: string) => {
     const page = await browser.newPage();
     await page.goto(`http://localhost:${port}/index.html`, { waitUntil: "networkidle0" });
 
-    console.log("loaded page");
-
     const dimensions = await page.evaluate(() => {
       return {
         // plus 16 for the 8px margin from the body tag
@@ -190,11 +162,7 @@ const captureWebPageScreenShot = async (port: string, TempFile: string) => {
       omitBackground: true
     });
 
-    console.log("screenshoted");
-
     await browser.close();
-
-    console.log("closed browser");
 
     return true;
   } catch (error) {
