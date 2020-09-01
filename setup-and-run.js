@@ -4,15 +4,15 @@ const cwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
 
 const installDependenciesRunner = spawn("yarn", [], { cwd })
 
-// installDependenciesRunner.stdout.on("data", (data) => {
-//   data = data.toString()
-//   console.log(data)
-// })
+installDependenciesRunner.stdout.on("data", (data) => {
+  data = data.toString()
+  console.log(data)
+})
 
-// installDependenciesRunner.stderr.on("data", (data) => {
-//   data = data.toString()
-//   console.log(data)
-// })
+installDependenciesRunner.stderr.on("data", (data) => {
+  data = data.toString()
+  console.log(data)
+})
 
 installDependenciesRunner.on("close", async (code) => {
   if (code === 0 || code === null ) {
@@ -21,6 +21,7 @@ installDependenciesRunner.on("close", async (code) => {
     process.exit(exitCode)
   } else {
     console.log("failed to install dependencies")
+    process.exit(code)
   }
 })
 
