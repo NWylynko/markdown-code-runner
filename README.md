@@ -17,7 +17,7 @@ console.log('hello world from typescript')
 
 ``` markdown-code-runner output
 
-> 50135771@1.0.0 start /tmp/50135771
+> 8281345@1.0.0 start /tmp/8281345
 > ts-node index.ts
 
 hello world from typescript
@@ -31,6 +31,12 @@ const App = () => <p>hello world from jsx</p>
 
 export default App
 ```
+
+<!-- markdown-code-runner image-start -->
+
+![rendered jsx](./README.4.png)
+
+<!-- markdown-code-runner image-end -->
 
 Python
 ``` py

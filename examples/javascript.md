@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-16521.244435002536
+11116.893459733383
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   9   │
-│    1    │ 'pizza'  │   2   │
-│    2    │ 'burger' │   8   │
+│    0    │ 'chips'  │   3   │
+│    1    │ 'pizza'  │   1   │
+│    2    │ 'burger' │   4   │
 └─────────┴──────────┴───────┘
 ```
 
@@ -50,5 +50,5 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner output
 Kanye West quote:
-The thought police want to suppress freedom of thought
+I feel like I'm too busy writing history to read it.
 ```
