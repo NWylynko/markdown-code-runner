@@ -17,7 +17,7 @@ console.log('hello world from typescript')
 
 ``` markdown-code-runner output
 
-> 42807485@1.0.0 start /tmp/42807485
+> 3460416@1.0.0 start /tmp/3460416
 > ts-node index.ts
 
 hello world from typescript

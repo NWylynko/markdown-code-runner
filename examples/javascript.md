@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-7746.523613409242
+15567.885419203742
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   3   │
-│    1    │ 'pizza'  │   3   │
-│    2    │ 'burger' │   0   │
+│    0    │ 'chips'  │   8   │
+│    1    │ 'pizza'  │   8   │
+│    2    │ 'burger' │   6   │
 └─────────┴──────────┴───────┘
 ```
 
@@ -50,5 +50,5 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner output
 Kanye West quote:
-I love sleep; it's my favorite.
+My greatest award is what I'm about to do.
 ```
