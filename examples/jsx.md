@@ -13,3 +13,18 @@ export default App
 ![rendered jsx](./jsx.0.png)
 
 <!-- markdown-code-runner image-end -->
+
+``` jsx
+import React from "react"
+
+const App = () => {
+  return (
+  <div>
+    <h3>last time this was rendered</h3>
+    <p>{Date()}</p>
+  </div>
+   )
+}
+
+export default App
+```
