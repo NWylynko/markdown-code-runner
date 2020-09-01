@@ -2,7 +2,7 @@ const { spawn } = require("child_process")
 
 const test = spawn("echo", ["$PWD"])
 
-test.stdout.on("data", data => console.log(data.toString())
+test.stdout.on("data", data => console.log(data.toString()))
 
 // const cwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
 
