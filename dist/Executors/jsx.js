@@ -67,10 +67,9 @@ const JSXExecutor = async (code, index, path, options) => {
             }
             if (data.includes("Built")) {
                 try {
-                    await captureWebPageScreenShot(port, TempFolderDir + "/output.png");
-                    console.log("captured screenshot");
                     const newPath = path.slice(0, -3) + "." + index + ".png";
-                    await fs_1.promises.rename(TempFolderDir + "/output.png", newPath);
+                    await captureWebPageScreenShot(port, newPath);
+                    console.log("captured screenshot");
                     output += `\n![rendered jsx](./${newPath.split("/").pop()})\n`;
                 }
                 catch (error) {
