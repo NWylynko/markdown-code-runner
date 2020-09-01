@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner output
 the javascript code is run in node
 it can do maths
-7912.156946659439
+18316.289006360374
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   2   │
+│    0    │ 'chips'  │   3   │
 │    1    │ 'pizza'  │   2   │
-│    2    │ 'burger' │   5   │
+│    2    │ 'burger' │   7   │
 └─────────┴──────────┴───────┘
 ```
 
@@ -50,5 +50,5 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner output
 Kanye West quote:
-If I don't scream, if I don't say something then no one's going to say anything.
+Have you ever thought you were in love with someone but then realized you were just staring in a mirror for 20 minutes?
 ```
