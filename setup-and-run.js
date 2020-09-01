@@ -1,8 +1,8 @@
 const { spawn } = require("child_process")
 
-const pwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
+const cwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
 
-const installDependenciesRunner = spawn("yarn", [], { pwd })
+const installDependenciesRunner = spawn("yarn", [], { cwd })
 
 // installDependenciesRunner.stdout.on("data", (data) => {
 //   data = data.toString()
@@ -26,7 +26,7 @@ installDependenciesRunner.on("close", async (code) => {
 
 const runAction = () => {
   return new Promise((resolve, reject) => {
-    const runner = spawn("node", ["./dist/githubAction.js"], { pwd })
+    const runner = spawn("node", ["./dist/githubAction.js"], { cwd })
     runner.stdout.on("data", data => process.stdout.write(data))
     runner.stderr.on("data", data => process.stderr.write(data))
     runner.on("close", code => { 
