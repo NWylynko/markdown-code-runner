@@ -77,12 +77,12 @@ const JSXExecutor = async (code, index, path, options) => {
                     console.error(error);
                 }
                 console.log("exiting");
-                JSXChildProcess.kill("SIGTERM");
+                JSXChildProcess.kill("SIGKILL");
             }
         });
         // same for errors, if the process errors it will still be written to the markdown so consumers of whatever thing this github action is being used on will know if the example code is broken
         JSXChildProcess.stderr.on("data", (data) => {
-            console.log(data.toString());
+            console.error(data.toString());
             output += data.toString();
             error = true;
         });
