@@ -1,41 +1,45 @@
 const { spawn } = require("child_process")
 
-const cwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
+const test = spawn("echo", ["$PWD"])
 
-const installDependenciesRunner = spawn("yarn", [], { cwd })
+test.stdout.on("data", data => console.log(data.toString())
 
-installDependenciesRunner.stdout.on("data", (data) => {
-  data = data.toString()
-  console.log(data)
-})
+// const cwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
 
-installDependenciesRunner.stderr.on("data", (data) => {
-  data = data.toString()
-  console.log(data)
-})
+// const installDependenciesRunner = spawn("yarn", [], { cwd })
 
-installDependenciesRunner.on("close", async (code) => {
-  if (code === 0 || code === null ) {
-    console.log("installed dependencies")
-    const exitCode = await runAction()
-    process.exit(exitCode)
-  } else {
-    console.log("failed to install dependencies")
-    process.exit(code)
-  }
-})
+// installDependenciesRunner.stdout.on("data", (data) => {
+//   data = data.toString()
+//   console.log(data)
+// })
 
-const runAction = () => {
-  return new Promise((resolve, reject) => {
-    const runner = spawn("node", ["./dist/githubAction.js"], { cwd })
-    runner.stdout.on("data", data => process.stdout.write(data))
-    runner.stderr.on("data", data => process.stderr.write(data))
-    runner.on("close", code => { 
-      if (code === 0 || code === null) {
-        resolve(code)
-      } else {
-        reject(code)
-      } 
-    })
-  })
-}
+// installDependenciesRunner.stderr.on("data", (data) => {
+//   data = data.toString()
+//   console.log(data)
+// })
+
+// installDependenciesRunner.on("close", async (code) => {
+//   if (code === 0 || code === null ) {
+//     console.log("installed dependencies")
+//     const exitCode = await runAction()
+//     process.exit(exitCode)
+//   } else {
+//     console.log("failed to install dependencies")
+//     process.exit(code)
+//   }
+// })
+
+// const runAction = () => {
+//   return new Promise((resolve, reject) => {
+//     const runner = spawn("node", ["./dist/githubAction.js"], { cwd })
+//     runner.stdout.on("data", data => process.stdout.write(data))
+//     runner.stderr.on("data", data => process.stderr.write(data))
+//     runner.on("close", code => { 
+//       if (code === 0 || code === null) {
+//         resolve(code)
+//       } else {
+//         reject(code)
+//       } 
+//     })
+//   })
+// }
