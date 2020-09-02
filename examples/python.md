@@ -13,10 +13,11 @@ if (randomNumber >= 0.5):
 else:
     print('all bets on red')
 ```
-
-
 ``` markdown-code-runner
 running python code is easy
-all bets on black
+all bets on red
 
 ```
+
+
+
