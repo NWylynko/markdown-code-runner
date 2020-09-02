@@ -32,10 +32,8 @@ export default async function run(folders: string) {
     // read in the markdown file
     const markdownFile = await fs.readFile(path, "utf8");
 
-    const splitter = new RegExp(/\n[`]{3}[ ]/); // '\n``` '
-
     // split the file by '\n``` ' to 'find' the code
-    const parts = markdownFile.split(splitter);
+    const parts = markdownFile.split('\n``` ');
     parts.shift();
 
     if (parts.length === 0) {

@@ -28,9 +28,8 @@ async function run(folders) {
         console.log("opening", shortenDir(path, folders));
         // read in the markdown file
         const markdownFile = await fs_1.promises.readFile(path, "utf8");
-        const splitter = new RegExp(/\n[`]{3}[ ]/); // '\n``` '
         // split the file by '\n``` ' to 'find' the code
-        const parts = markdownFile.split(splitter);
+        const parts = markdownFile.split('\n``` ');
         parts.shift();
         if (parts.length === 0) {
             console.error("no code found :(");
