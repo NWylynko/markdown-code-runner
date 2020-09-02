@@ -18,6 +18,7 @@ installDependenciesRunner.on("close", async (code) => {
   if (code === 0 || code === null ) {
     console.log("installed dependencies")
     const exitCode = await runAction()
+    console.log(exitCode === 0 ? 'success' : 'fail')
     process.exit(exitCode)
   } else {
     console.log("failed to install dependencies")
@@ -32,7 +33,7 @@ const runAction = () => {
 //     runner.stderr.on("data", data => process.stderr.write(data))
     runner.on("close", code => { 
       if (code === 0 || code === null) {
-        resolve(code)
+        resolve(code || 0)
       } else {
         reject(code)
       } 
