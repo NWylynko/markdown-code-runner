@@ -1,8 +1,12 @@
 const { spawn } = require("child_process")
 
-const test = spawn("ls", ["/home/runner/work/"])
+const base = "/home/runner/work/"
+
+const test = spawn("ls", [base])
+const test2 = spawn("ls", [base + "_actions"])
 
 test.stdout.on("data", data => console.log(data.toString()))
+test2.stdout.on("data", data => console.log(data.toString()))
 
 // const cwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
 
