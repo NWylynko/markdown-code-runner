@@ -50,7 +50,7 @@ const JSXExecutor = async (code, index, path, options) => {
     await fs_1.promises.writeFile(TempFolderDir + "/express.js", expressApp);
     return new Promise(async (resolve) => {
         let port;
-        let exitCode;
+        let exitCode = 0;
         // start the output with <!-- --> so the image can be replaced later if needed
         let output = '';
         await npm.addScript({ build: "parcel build index.html" });

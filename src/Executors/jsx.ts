@@ -62,8 +62,7 @@ const JSXExecutor = async (
   return new Promise( async (resolve) => {
 
     let port: string;
-    let exitCode: number;
-
+    let exitCode: number = 0;
     // start the output with <!-- --> so the image can be replaced later if needed
     let output = '';
 
