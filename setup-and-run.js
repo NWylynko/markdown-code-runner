@@ -5,10 +5,14 @@ const base = "/home/runner/work/"
 const test = spawn("ls", [base])
 const test2 = spawn("ls", [base + "_actions"])
 const test3 = spawn("ls", [base + "_actions/actions"])
+const test4 = spawn("ls", [base + "_actions/nwylynko"])
+const test5 = spawn("ls", [base + "_actions/nwylynko/markdown-code-runner"])
 
 test.stdout.on("data", data => console.log(data.toString()))
 test2.stdout.on("data", data => console.log(data.toString()))
 test3.stdout.on("data", data => console.log(data.toString()))
+test4.stdout.on("data", data => console.log(data.toString()))
+test5.stdout.on("data", data => console.log(data.toString()))
 
 // const cwd = "/home/runner/work/markdown-code-runner/markdown-code-runner/"
 
