@@ -7,6 +7,7 @@ console.log('hello world from javascript')
 ```
 
 
+
 ``` markdown-code-runner
 hello world from javascript
 
@@ -16,6 +17,7 @@ Typescript
 ``` ts
 console.log('hello world from typescript')
 ```
+
 
 
 ``` markdown-code-runner
@@ -44,6 +46,7 @@ print('hello world from python')
 ```
 
 
+
 ``` markdown-code-runner
 hello world from python
 
@@ -55,6 +58,7 @@ echo 'hello world from bash'
 ```
 
 
+
 ``` markdown-code-runner
 hello world from bash
 
@@ -64,6 +68,7 @@ Shell
 ``` sh
 echo 'hello world from Shell'
 ```
+
 
 
 ``` markdown-code-runner
