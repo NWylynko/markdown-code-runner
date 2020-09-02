@@ -6,8 +6,9 @@ Javascript
 console.log('hello world from javascript')
 ```
 
-``` markdown-code-runner output
+``` markdown-code-runner
 hello world from javascript
+
 ```
 
 Typescript
@@ -15,12 +16,9 @@ Typescript
 console.log('hello world from typescript')
 ```
 
-``` markdown-code-runner output
-
-> 82190303@1.0.0 start /tmp/82190303
-> ts-node index.ts
-
+``` markdown-code-runner
 hello world from typescript
+
 ```
 
 JSX
@@ -43,8 +41,9 @@ Python
 print('hello world from python')
 ```
 
-``` markdown-code-runner output
+``` markdown-code-runner
 hello world from python
+
 ```
 
 Bash
@@ -52,8 +51,9 @@ Bash
 echo 'hello world from bash'
 ```
 
-``` markdown-code-runner output
+``` markdown-code-runner
 hello world from bash
+
 ```
 
 Shell
@@ -61,6 +61,7 @@ Shell
 echo 'hello world from Shell'
 ```
 
-``` markdown-code-runner output
+``` markdown-code-runner
 hello world from Shell
+
 ```
