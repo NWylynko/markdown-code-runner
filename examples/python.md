@@ -13,5 +13,3 @@ if (randomNumber >= 0.5):
 else:
     print('all bets on red')
 ```
-undefinedrunning python code is easy
-all bets on red
