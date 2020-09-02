@@ -1,15 +1,13 @@
 import { promises as fs } from "fs";
 import { spawn } from "child_process";
-import { createPackageJson, installDependencies, installDependency, addScript } from "../utils/npm"
-
-interface ExecutorOptions {
-  dependencies: string[];
-}
+import NPM from "../utils/npm"
+import runner from "../utils/runner"
+import { ExecutorOptions, execute } from "../index"
 
 const TypescriptExecutor = async (
   code: string,
   options: ExecutorOptions
-): Promise<string> => {
+): Promise<execute> => {
   // create a random number to use as a filename for the file to be saved to /tmp and ran from
   const randomFileName = Math.floor(Math.random() * 100000000);
 
@@ -20,22 +18,27 @@ const TypescriptExecutor = async (
   await fs.mkdir(TempFolderDir);
   await fs.writeFile(TempCodeFile, code);
 
-  await createPackageJson(TempFolderDir);
-  await addScript({ start: "ts-node index.ts"}, TempFolderDir)
-  await installDependency("ts-node", TempFolderDir)
-  await installDependency("typescript", TempFolderDir)
+  const npm = new NPM(TempFolderDir)
+
+  await npm.createPackageJson();
+  await npm.installDependencies(["ts-node", "typescript"])
   if (options?.dependencies) {
-    await installDependencies(options.dependencies, TempFolderDir);
+    await npm.installDependencies(options.dependencies);
   }
 
-  return new Promise((resolve) => {
+  // build the typescript to javascript
+  await npm.addScript({ build: "tsc index.ts"})
+  await runner("npm", ["run", "build"], { cwd: TempFolderDir })
+
+  return new Promise(async (resolve) => {
     // run the process using the runtime and the file of code
+    await npm.addScript({ start: "node index.js"})
     const TSChildProcess = spawn("npm", ["start"], {
       cwd: TempFolderDir,
     });
 
     // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed
-    let output = "\n``` markdown-code-runner output\n";
+    let output: string;
 
     // take the output from the process and add it to the output string
     TSChildProcess.stdout.on("data", (data) => {
@@ -49,21 +52,11 @@ const TypescriptExecutor = async (
 
     // wait for the process to exit, either successfully or with an error code
     TSChildProcess.on("close", (code) => {
-      // exit code 0 means the process didn't error
-      if (code === 0) {
-        console.log(" ✔️", TempFolderDir, "finished successfully");
-      } else {
-        console.warn(" ❌", TempFolderDir, "failed with error code", code);
-      }
-
-      // add ``` and a newline to the end of the output for the markdown
-      output += "```\n";
-
       // remove the temp file
       fs.rmdir(TempFolderDir, { recursive: true });
 
       // resolve (aka return) the results so it can be added to the markdown file
-      resolve(output);
+      resolve({ output, exitCode: code, Temp: TempFolderDir });
     });
   });
 };

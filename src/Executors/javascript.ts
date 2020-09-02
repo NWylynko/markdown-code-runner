@@ -1,15 +1,12 @@
 import { promises as fs } from "fs";
 import { spawn } from "child_process";
-import { createPackageJson, installDependencies } from "../utils/npm"
-
-interface ExecutorOptions {
-  dependencies: string[];
-}
+import NPM from "../utils/npm"
+import { ExecutorOptions, execute } from "../index"
 
 const JavascriptExecutor = async (
   code: string,
   options: ExecutorOptions
-): Promise<string> => {
+): Promise<execute> => {
   // create a random number to use as a filename for the file to be saved to /tmp and ran from
   const randomFileName = Math.floor(Math.random() * 100000000);
 
@@ -20,9 +17,11 @@ const JavascriptExecutor = async (
   await fs.mkdir(TempFolderDir);
   await fs.writeFile(TempCodeFile, code);
 
-  await createPackageJson(TempFolderDir);
+  const npm = new NPM(TempFolderDir)
+
+  await npm.createPackageJson();
   if (options?.dependencies) {
-    await installDependencies(options.dependencies, TempFolderDir);
+    await npm.installDependencies(options.dependencies);
   }
 
   return new Promise((resolve) => {
@@ -31,8 +30,7 @@ const JavascriptExecutor = async (
       cwd: TempFolderDir,
     });
 
-    // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed
-    let output = "\n``` markdown-code-runner output\n";
+    let output: string;
 
     // take the output from the process and add it to the output string
     JSChildProcess.stdout.on("data", (data) => {
@@ -46,21 +44,12 @@ const JavascriptExecutor = async (
 
     // wait for the process to exit, either successfully or with an error code
     JSChildProcess.on("close", (code) => {
-      // exit code 0 means the process didn't error
-      if (code === 0) {
-        console.log(" ✔️", TempFolderDir, "finished successfully");
-      } else {
-        console.warn(" ❌", TempFolderDir, "failed with error code", code);
-      }
-
-      // add ``` and a newline to the end of the output for the markdown
-      output += "```\n";
 
       // remove the temp file
       fs.rmdir(TempFolderDir, { recursive: true });
 
       // resolve (aka return) the results so it can be added to the markdown file
-      resolve(output);
+      resolve({ output, exitCode: code, Temp: TempFolderDir });
     });
   });
 };

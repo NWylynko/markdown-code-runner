@@ -30,22 +30,33 @@ async function run(folders) {
         const markdownFile = await fs_1.promises.readFile(path, "utf8");
         const splitter = new RegExp(/\n[`]{3}[ ]/); // '\n``` '
         // split the file by '\n``` ' to 'find' the code
-        let parts = markdownFile.split(splitter);
+        const parts = markdownFile.split(splitter);
         parts.shift();
+        if (parts.length === 0) {
+            console.error("no code found :(");
+            return;
+        }
         const outputs = await Promise.all(parts.map(async (part, index) => {
+            // get any options that are attached at the bottom of the code, eg dependencies that need to be installed
             const { options, optionsMarkdown } = getCodeOptions(part);
-            // remove the rest of the string after the closing ```
+            // gets everything inside the ``` ```, this includes the first line that defines the language
             const codeWithLanguage = part.split("\n```\n")[0];
-            // split it by the new line so it can get the language from the first line
-            let codeLineArray = codeWithLanguage.split("\n");
-            // gets the language and removes it from the above array so when its joined it doesn't have it
-            const MDLanguage = codeLineArray.shift();
-            // if the language is markdown-code-runner output its been put there by this code so it needs to be marked for removal so it can be updated
-            if (MDLanguage === "markdown-code-runner output") {
+            // this splits up the string of code by new line
+            const codeLineArray = codeWithLanguage.split("\n");
+            // this removes the first line and splits up into the language and potential attributes
+            const MDLanguageWithAttributes = codeLineArray.shift().split(" ");
+            // this gets the first item in the list which should be the language
+            const MDLanguage = MDLanguageWithAttributes[0].toLowerCase();
+            // join the array back into a string, now without the ``` [language] part so its executable
+            const code = codeLineArray.join("\n");
+            // this is used to append the output to the code
+            const markdownCode = "\n``` " + codeWithLanguage + "\n```\n" + optionsMarkdown;
+            // if one of the attributes is "markdown-code-runner" it was added by the last time it was run so it should be removed to be replaced
+            if (MDLanguage.includes("markdown-code-runner")) {
                 console.log("  found stale output, removing it...");
                 return {
                     remove: true,
-                    markdownCode: "\n``` " + codeWithLanguage + "\n```\n",
+                    markdownCode
                 };
             }
             // or if its not found in the array of supported languages then just skip over it
@@ -53,54 +64,19 @@ async function run(folders) {
                 console.warn("  not supported language");
                 return;
             }
-            // join the array (without the language part at the start now) back together to be executed
-            const code = codeLineArray.join("\n");
-            const markdownCode = "\n``` " + codeWithLanguage + "\n```\n" + optionsMarkdown;
-            try {
-                if (MDLanguage === "javascript" || MDLanguage === "js") {
-                    return {
-                        output: await javascript_1.default(code, options),
-                        markdownCode,
-                    };
-                }
-                else if (MDLanguage === "typescript" || MDLanguage === "ts") {
-                    return {
-                        output: await typescript_1.default(code, options),
-                        markdownCode,
-                    };
-                }
-                else if (MDLanguage === "jsx") {
-                    try {
-                        const output = await jsx_1.default(code, index, path, options);
-                        return { output, markdownCode };
-                    }
-                    catch (error) {
-                        return { error };
-                    }
-                }
-                else {
-                    // run it through the generic executor to get the output
-                    const output = await genericExecutor_1.default(MDLanguage, code);
-                    return {
-                        output,
-                        markdownCode,
-                    };
-                }
+            const { output, exitCode, Temp } = await execute(MDLanguage, code, index, path, options);
+            if (exitCode === 0) {
+                console.log(" ✔️", Temp, "finished successfully");
             }
-            catch (error) {
-                console.error(' ❌', error);
-                return { error: true };
+            else {
+                console.warn(" ❌", Temp, "failed with error code", exitCode);
             }
+            return { output, markdownCode };
         }));
         // copy the markdown to a new markdown file so it can be edited
         let newMarkdownFile = markdownFile;
         newMarkdownFile = removeStaleImages(newMarkdownFile);
-        await Promise.all(outputs.map(async ({ remove, markdownCode, output, error }) => {
-            // an error occurred with the executor, skip it
-            if (error) {
-                console.error(error);
-                return;
-            }
+        await Promise.all(outputs.map(async ({ remove, markdownCode, output }) => {
             // if a chuck of code has 'markdown-code-runner output' it will be marked for removal because it will be replaced with an updated version
             if (remove) {
                 // the old output gets removed
@@ -122,6 +98,20 @@ async function run(folders) {
     });
 }
 exports.default = run;
+const execute = async (MDLanguage, code, index, path, options) => {
+    if (MDLanguage === "javascript" || MDLanguage === "js") {
+        return javascript_1.default(code, options);
+    }
+    else if (MDLanguage === "typescript" || MDLanguage === "ts") {
+        return typescript_1.default(code, options);
+    }
+    else if (MDLanguage === "jsx") {
+        return jsx_1.default(code, index, path, options);
+    }
+    else {
+        return genericExecutor_1.default(MDLanguage, code);
+    }
+};
 const shortenDir = (fileOrDir, baseDir) => fileOrDir.replace(baseDir, "");
 const getCodeOptions = (part) => {
     // 'finds' and gets anything after '<!-- markdown-code-runner\n'
