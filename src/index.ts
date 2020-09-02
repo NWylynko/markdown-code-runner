@@ -64,7 +64,7 @@ export default async function run(folders: string) {
 
         // this is used to append the output to the code
         const markdownCode =
-          "\n``` " + codeWithLanguage + "\n```\n" + optionsMarkdown;
+          "\n``` " + codeWithLanguage + "\n```" + optionsMarkdown;
 
         // if one of the attributes is "markdown-code-runner" it was added by the last time it was run so it should be removed to be replaced
         if (MDLanguage.includes("markdown-code-runner")) {
@@ -113,11 +113,6 @@ export default async function run(folders: string) {
           // use the markdownCode to position the output bellow it
           // add the code and output together so its all nice and snug on the markdown
           const newMarkdown = markdownCode + output;
-
-          console.log('---')
-          console.log('markdownCode', markdownCode)
-          console.log(newMarkdownFile.includes(markdownCode))
-          console.log('---')
 
           // replace it in the string that will be put into the .md file
           newMarkdownFile = newMarkdownFile.replace(markdownCode, newMarkdown);

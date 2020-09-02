@@ -49,7 +49,7 @@ async function run(folders) {
             // join the array back into a string, now without the ``` [language] part so its executable
             const code = codeLineArray.join("\n");
             // this is used to append the output to the code
-            const markdownCode = "\n``` " + codeWithLanguage + "\n```\n" + optionsMarkdown;
+            const markdownCode = "\n``` " + codeWithLanguage + "\n```" + optionsMarkdown;
             // if one of the attributes is "markdown-code-runner" it was added by the last time it was run so it should be removed to be replaced
             if (MDLanguage.includes("markdown-code-runner")) {
                 console.log("  found stale output, removing it...");
@@ -90,10 +90,6 @@ async function run(folders) {
                 // use the markdownCode to position the output bellow it
                 // add the code and output together so its all nice and snug on the markdown
                 const newMarkdown = markdownCode + output;
-                console.log('---');
-                console.log('markdownCode', markdownCode);
-                console.log(newMarkdownFile.includes(markdownCode));
-                console.log('---');
                 // replace it in the string that will be put into the .md file
                 newMarkdownFile = newMarkdownFile.replace(markdownCode, newMarkdown);
             }
