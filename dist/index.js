@@ -90,12 +90,16 @@ async function run(folders) {
                 // use the markdownCode to position the output bellow it
                 // add the code and output together so its all nice and snug on the markdown
                 const newMarkdown = markdownCode + output;
+                console.log('---');
+                console.log('markdownCode', markdownCode);
+                console.log(newMarkdownFile.search(markdownCode));
+                console.log('---');
                 // replace it in the string that will be put into the .md file
                 newMarkdownFile = newMarkdownFile.replace(markdownCode, newMarkdown);
             }
         }));
         // write the new markdown file out :)
-        fs_1.promises.writeFile(path, newMarkdownFile);
+        await fs_1.promises.writeFile(path, newMarkdownFile);
         console.log("written", shortenDir(path, folders), ":)");
     });
 }
