@@ -14,6 +14,21 @@ const table = [
 console.table(table);
 ```
 
+``` markdown-code-runner
+the javascript code is run in node
+it can do maths
+1046.0494640133365
+and can render a table
+┌─────────┬──────────┬───────┐
+│ (index) │   name   │ yummy │
+├─────────┼──────────┼───────┤
+│    0    │ 'chips'  │   8   │
+│    1    │ 'pizza'  │   8   │
+│    2    │ 'burger' │   0   │
+└─────────┴──────────┴───────┘
+
+```
+
 ``` js
 const fetch = require("node-fetch");
 
@@ -33,3 +48,9 @@ fetch('https://api.kanye.rest/')
     ]
   }
 -->
+
+``` markdown-code-runner
+Kanye West quote:
+2024
+
+```
