@@ -1,6 +1,6 @@
 const { spawn } = require("child_process")
 
-const test = spawn("ls", ["/home/runner/"])
+const test = spawn("ls", ["/home/runner/work/"])
 
 test.stdout.on("data", data => console.log(data.toString()))
 
