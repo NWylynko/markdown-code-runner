@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner
 the javascript code is run in node
 it can do maths
-9995.255481028727
+2867.6661361691513
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
 │    0    │ 'chips'  │   9   │
-│    1    │ 'pizza'  │   3   │
-│    2    │ 'burger' │   6   │
+│    1    │ 'pizza'  │   5   │
+│    2    │ 'burger' │   0   │
 └─────────┴──────────┴───────┘
 
 ```
@@ -51,6 +51,6 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner
 Kanye West quote:
-I want the world to be better! All I want is positive! All I want is dopeness!
+People always tell you 'Be humble. Be humble.' When was the last time someone told you to be amazing? Be great! Be awesome! Be awesome!
 
 ```
