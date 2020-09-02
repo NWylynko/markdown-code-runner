@@ -116,7 +116,7 @@ export default async function run(folders: string) {
 
           console.log('---')
           console.log('markdownCode', markdownCode)
-          console.log(newMarkdownFile.search(markdownCode))
+          console.log(newMarkdownFile.includes(markdownCode))
           console.log('---')
 
           // replace it in the string that will be put into the .md file

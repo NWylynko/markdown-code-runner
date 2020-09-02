@@ -92,7 +92,7 @@ async function run(folders) {
                 const newMarkdown = markdownCode + output;
                 console.log('---');
                 console.log('markdownCode', markdownCode);
-                console.log(newMarkdownFile.search(markdownCode));
+                console.log(newMarkdownFile.includes(markdownCode));
                 console.log('---');
                 // replace it in the string that will be put into the .md file
                 newMarkdownFile = newMarkdownFile.replace(markdownCode, newMarkdown);
