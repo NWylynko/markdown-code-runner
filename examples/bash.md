@@ -9,9 +9,9 @@ echo date: $(date)
 ```
 
 ``` markdown-code-runner
-hostname: fv-az174
+hostname: fv-az16
 shell: /bin/bash
 ls: LICENSE README.4.png README.md action.yml dist examples node_modules package.json setup-and-run.js src tsconfig.json yarn.lock
-date: Wed Sep 2 15:04:32 UTC 2020
+date: Wed Sep 2 15:20:28 UTC 2020
 
 ```
