@@ -7,12 +7,12 @@ const App = () => <p>Example React</p>
 
 export default App
 ```
-
 <!-- markdown-code-runner image-start -->
 
 ![rendered jsx](./jsx.0.png)
 
 <!-- markdown-code-runner image-end -->
+
 
 ``` jsx
 import React from "react"
@@ -28,9 +28,9 @@ const App = () => {
 
 export default App
 ```
-
 <!-- markdown-code-runner image-start -->
 
 ![rendered jsx](./jsx.1.png)
 
 <!-- markdown-code-runner image-end -->
+

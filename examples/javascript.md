@@ -13,21 +13,22 @@ const table = [
 ];
 console.table(table);
 ```
-
 ``` markdown-code-runner
 the javascript code is run in node
 it can do maths
-2867.6661361691513
+6500.7887627037335
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   9   │
-│    1    │ 'pizza'  │   5   │
-│    2    │ 'burger' │   0   │
+│    0    │ 'chips'  │   6   │
+│    1    │ 'pizza'  │   4   │
+│    2    │ 'burger' │   5   │
 └─────────┴──────────┴───────┘
 
 ```
+
+
 
 ``` js
 const fetch = require("node-fetch");
@@ -49,8 +50,3 @@ fetch('https://api.kanye.rest/')
   }
 -->
 
-``` markdown-code-runner
-Kanye West quote:
-People always tell you 'Be humble. Be humble.' When was the last time someone told you to be amazing? Be great! Be awesome! Be awesome!
-
-```
