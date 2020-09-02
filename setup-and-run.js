@@ -29,8 +29,8 @@ installDependenciesRunner.on("close", async (code) => {
 const runAction = () => {
   return new Promise((resolve, reject) => {
     const runner = spawn("node", ["./dist/githubAction.js"], { cwd })
-//     runner.stdout.on("data", data => process.stdout.write(data))
-//     runner.stderr.on("data", data => process.stderr.write(data))
+    runner.stdout.on("data", data => process.stdout.write(data))
+    runner.stderr.on("data", data => process.stderr.write(data))
     runner.on("close", code => { 
       if (code === 0 || code === null) {
         resolve(code || 0)
