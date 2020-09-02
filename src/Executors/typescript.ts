@@ -32,8 +32,7 @@ const TypescriptExecutor = async (
 
   return new Promise(async (resolve) => {
     // run the process using the runtime and the file of code
-    await npm.addScript({ start: "node index.js"})
-    const TSChildProcess = spawn("npm", ["start"], {
+    const TSChildProcess = spawn("node", ["index.js"], {
       cwd: TempFolderDir,
     });
 

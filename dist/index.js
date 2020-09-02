@@ -71,7 +71,7 @@ async function run(folders) {
             else {
                 console.warn(" ❌", Temp, "failed with error code", exitCode);
             }
-            return { output, markdownCode };
+            return { output: '\n``` markdown-code-runner\n' + output + '\n```\n', markdownCode };
         }));
         // copy the markdown to a new markdown file so it can be edited
         let newMarkdownFile = markdownFile;

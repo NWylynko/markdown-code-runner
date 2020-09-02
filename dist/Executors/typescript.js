@@ -26,8 +26,7 @@ const TypescriptExecutor = async (code, options) => {
     await runner_1.default("npm", ["run", "build"], { cwd: TempFolderDir });
     return new Promise(async (resolve) => {
         // run the process using the runtime and the file of code
-        await npm.addScript({ start: "node index.js" });
-        const TSChildProcess = child_process_1.spawn("npm", ["start"], {
+        const TSChildProcess = child_process_1.spawn("node", ["index.js"], {
             cwd: TempFolderDir,
         });
         // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed

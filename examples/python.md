@@ -13,8 +13,5 @@ if (randomNumber >= 0.5):
 else:
     print('all bets on red')
 ```
-
-``` markdown-code-runner output
-running python code is easy
+undefinedrunning python code is easy
 all bets on red
-```
