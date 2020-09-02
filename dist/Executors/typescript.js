@@ -29,8 +29,7 @@ const TypescriptExecutor = async (code, options) => {
         const TSChildProcess = child_process_1.spawn("node", ["index.js"], {
             cwd: TempFolderDir,
         });
-        // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed
-        let output;
+        let output = '';
         // take the output from the process and add it to the output string
         TSChildProcess.stdout.on("data", (data) => {
             output += data;

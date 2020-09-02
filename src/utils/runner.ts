@@ -4,7 +4,7 @@ const runner = (command: string, args?: readonly string[], options?: SpawnOption
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, options)
 
-    let output: string;
+    let output: string = '';
 
     child.stdout.on("data", (data) => {
       output += data.toString()

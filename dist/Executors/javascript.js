@@ -24,7 +24,7 @@ const JavascriptExecutor = async (code, options) => {
         const JSChildProcess = child_process_1.spawn("node", [TempCodeFile], {
             cwd: TempFolderDir,
         });
-        let output;
+        let output = '';
         // take the output from the process and add it to the output string
         JSChildProcess.stdout.on("data", (data) => {
             output += data;

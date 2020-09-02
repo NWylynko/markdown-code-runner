@@ -18,7 +18,7 @@ const genericExecutor = async (MDLanguage: string, code: string): Promise<execut
   return new Promise(async(resolve) => {
 
     let exitCode: number;
-    let output: string;
+    let output: string = '';
 
     try {
       // run the process using the runtime and the file of code

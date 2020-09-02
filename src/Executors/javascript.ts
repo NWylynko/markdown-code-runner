@@ -30,7 +30,7 @@ const JavascriptExecutor = async (
       cwd: TempFolderDir,
     });
 
-    let output: string;
+    let output: string = '';
 
     // take the output from the process and add it to the output string
     JSChildProcess.stdout.on("data", (data) => {

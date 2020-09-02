@@ -64,12 +64,15 @@ async function run(folders) {
                 console.warn("  not supported language");
                 return;
             }
-            const { output, exitCode, Temp } = await execute(MDLanguage, code, index, path, options);
+            const { output, exitCode, Temp, image } = await execute(MDLanguage, code, index, path, options);
             if (exitCode === 0) {
                 console.log(" ✔️", Temp, "finished successfully");
             }
             else {
                 console.warn(" ❌", Temp, "failed with error code", exitCode);
+            }
+            if (image) {
+                return { output: '\n<!-- markdown-code-runner image-start -->\n' + output + '\n<!-- markdown-code-runner image-end -->\n', markdownCode };
             }
             return { output: '\n``` markdown-code-runner\n' + output + '\n```\n', markdownCode };
         }));

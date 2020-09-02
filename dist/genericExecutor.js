@@ -16,7 +16,7 @@ const genericExecutor = async (MDLanguage, code) => {
     await fs_1.promises.writeFile(fileLocation, code);
     return new Promise(async (resolve) => {
         let exitCode;
-        let output;
+        let output = '';
         try {
             // run the process using the runtime and the file of code
             output = await runner_1.default(runTime, [fileLocation]);

@@ -52,7 +52,7 @@ const JSXExecutor = async (code, index, path, options) => {
         let port;
         let exitCode;
         // start the output with <!-- --> so the image can be replaced later if needed
-        let output = "\n<!-- markdown-code-runner image-start -->\n";
+        let output = '';
         await npm.addScript({ build: "parcel build index.html" });
         try {
             await runner_1.default("npm", ['run', 'build'], { cwd: TempFolderDir });
@@ -88,11 +88,9 @@ const JSXExecutor = async (code, index, path, options) => {
         });
         // wait for the process to exit, either successfully or with an error code
         JSXChildProcess.on("exit", async (code, signal) => {
-            // add ``` and a newline to the end of the output for the markdown
-            output += "\n<!-- markdown-code-runner image-end -->\n";
             // remove the temp folder
             await fs_1.promises.rmdir(TempFolderDir, { recursive: true });
-            resolve({ output, exitCode, Temp: TempFolderDir });
+            resolve({ output, exitCode, Temp: TempFolderDir, image: true });
         });
     });
 };

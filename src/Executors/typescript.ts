@@ -36,8 +36,7 @@ const TypescriptExecutor = async (
       cwd: TempFolderDir,
     });
 
-    // start the output with ``` for markdown and 'markdown-code-runner output' so it can be found later to be written over if the code is changed
-    let output: string;
+    let output: string = '';
 
     // take the output from the process and add it to the output string
     TSChildProcess.stdout.on("data", (data) => {

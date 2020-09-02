@@ -4,7 +4,7 @@ const child_process_1 = require("child_process");
 const runner = (command, args, options) => {
     return new Promise((resolve, reject) => {
         const child = child_process_1.spawn(command, args, options);
-        let output;
+        let output = '';
         child.stdout.on("data", (data) => {
             output += data.toString();
         });

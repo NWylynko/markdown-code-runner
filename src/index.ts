@@ -83,7 +83,7 @@ export default async function run(folders: string) {
           return;
         }
 
-        const { output, exitCode, Temp } = await execute(MDLanguage, code, index, path, options)
+        const { output, exitCode, Temp, image } = await execute(MDLanguage, code, index, path, options)
 
         if (exitCode === 0) {
           console.log(" ✔️", Temp, "finished successfully");
@@ -91,6 +91,9 @@ export default async function run(folders: string) {
           console.warn(" ❌", Temp, "failed with error code", exitCode);
         }
 
+        if (image) {
+          return { output: '\n<!-- markdown-code-runner image-start -->\n' + output + '\n<!-- markdown-code-runner image-end -->\n', markdownCode }
+        }
         return { output: '\n``` markdown-code-runner\n' + output + '\n```\n', markdownCode }
       }));
 
@@ -127,7 +130,7 @@ export default async function run(folders: string) {
 
 }
 
-export interface execute { output: string, exitCode: number, Temp: string }
+export interface execute { output: string, exitCode: number, Temp: string, image?: boolean }
 
 const execute = async (MDLanguage: string, code: string, index: number, path: string, options: ExecutorOptions): Promise<execute> => {
   if (MDLanguage === "javascript" || MDLanguage === "js") {
