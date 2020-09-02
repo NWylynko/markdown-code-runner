@@ -17,14 +17,14 @@ console.table(table);
 ``` markdown-code-runner
 the javascript code is run in node
 it can do maths
-20171.017361767575
+9995.255481028727
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   2   │
-│    1    │ 'pizza'  │   5   │
-│    2    │ 'burger' │   3   │
+│    0    │ 'chips'  │   9   │
+│    1    │ 'pizza'  │   3   │
+│    2    │ 'burger' │   6   │
 └─────────┴──────────┴───────┘
 
 ```
@@ -51,6 +51,6 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner
 Kanye West quote:
-I think I do myself a disservice by comparing myself to Steve Jobs and Walt Disney and human beings that we've seen before. It should be more like Willy Wonka...and welcome to my chocolate factory.
+I want the world to be better! All I want is positive! All I want is dopeness!
 
 ```
