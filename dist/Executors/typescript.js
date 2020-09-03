@@ -17,7 +17,7 @@ const TypescriptExecutor = async ({ code, options }) => {
     await fs_1.promises.writeFile(TempCodeFile, code);
     const npm = new npm_1.default(TempFolderDir);
     await npm.createPackageJson();
-    await npm.installDependencies(["ts-node", "typescript"]);
+    await npm.installDependencies(["typescript", "@types/node"]);
     if (options === null || options === void 0 ? void 0 : options.dependencies) {
         await npm.installDependencies(options.dependencies);
     }
