@@ -1,17 +1,15 @@
 import { promises as fs } from "fs";
 import util from "util";
 import glob from "glob";
-import languages from "./languages.json";
 
-import genericExecutor from "./genericExecutor";
+import genericExecutor from "./Executors/genericExecutor";
 import JavascriptExecutor from "./Executors/javascript";
 import TypescriptExecutor from "./Executors/typescript";
 import JSXExecutor from "./Executors/jsx";
 
-import runner from "./utils/runner"
+import { Executors } from "./Executors";
 
-// get al the languages supported by genericExecutor
-const supportedLanguages = Object.keys(languages);
+import { executeInput, executeOutput, ExecutorOptions } from "./types";
 
 // convert callback functions to async friendly functions
 const globAsync = util.promisify(glob);
@@ -20,7 +18,9 @@ export default async function run(folders: string) {
   //get the markdown files
   const filesUnFiltered = await globAsync(folders);
 
-  const files = filesUnFiltered.filter(file => !file.includes("node_modules"))
+  const files = filesUnFiltered.filter(
+    (file) => !file.includes("node_modules")
+  );
 
   if (files.length === 0) {
     console.error("no markdown files found :(");
@@ -35,17 +35,16 @@ export default async function run(folders: string) {
     const markdownFile = await fs.readFile(path, "utf8");
 
     // split the file by '\n``` ' to 'find' the code
-    const parts = markdownFile.split('\n``` ');
+    const parts = markdownFile.split("\n``` ");
     parts.shift();
 
     if (parts.length === 0) {
-      console.error("no code found :(")
+      console.error("no code found :(");
       return;
     }
 
     const outputs = await Promise.all(
       parts.map(async (part, index) => {
-
         // get any options that are attached at the bottom of the code, eg dependencies that need to be installed
         const { options, optionsMarkdown } = getCodeOptions(part);
 
@@ -59,7 +58,7 @@ export default async function run(folders: string) {
         const MDLanguageWithAttributes = codeLineArray.shift().split(" ");
 
         // this gets the first item in the list which should be the language
-        const MDLanguage = MDLanguageWithAttributes[0].toLowerCase()
+        const MDLanguage = MDLanguageWithAttributes[0].toLowerCase();
 
         // join the array back into a string, now without the ``` [language] part so its executable
         const code = codeLineArray.join("\n");
@@ -73,37 +72,59 @@ export default async function run(folders: string) {
           console.log("  found stale output, removing it...");
           return {
             remove: true,
-            markdownCode
+            markdownCode,
           };
         }
-        
-        // or if its not found in the array of supported languages then just skip over it
-        else if (!supportedLanguages.includes(MDLanguage)) {
-          console.warn("  not supported language");
+
+        let execute: ({
+          code,
+          index,
+          path,
+          options,
+        }: executeInput) => Promise<executeOutput>;
+
+        try {
+          execute = Executors[MDLanguage];
+        } catch (error) {
+          console.warn(`  not supported language`);
           return;
         }
 
-        const { output, exitCode, Temp, image } = await execute(MDLanguage, code, index, path, options)
+        const { output, exitCode, Temp, image } = await execute({
+          code,
+          index,
+          path,
+          options,
+        });
 
-        if (exitCode === 0) {
+        if (exitCode === 0 || exitCode === null) {
           console.log(" ✔️", Temp, "finished successfully");
         } else {
           console.warn(" ❌", Temp, "failed with error code", exitCode);
         }
 
         if (image) {
-          return { output: '\n<!-- markdown-code-runner image-start -->\n' + output + '\n<!-- markdown-code-runner image-end -->\n', markdownCode }
+          return {
+            output:
+              "\n<!-- markdown-code-runner image-start -->\n" +
+              output +
+              "\n<!-- markdown-code-runner image-end -->\n",
+            markdownCode,
+          };
         }
-        return { output: '\n``` markdown-code-runner\n' + output + '\n```\n', markdownCode }
-      }));
+        return {
+          output: "\n``` markdown-code-runner\n" + output + "\n```\n",
+          markdownCode,
+        };
+      })
+    );
 
     // copy the markdown to a new markdown file so it can be edited
     let newMarkdownFile = markdownFile;
-    newMarkdownFile = removeStaleImages(newMarkdownFile)
+    newMarkdownFile = removeStaleImages(newMarkdownFile);
 
     await Promise.all(
       outputs.map(async ({ remove, markdownCode, output }: output) => {
-
         // if a chuck of code has 'markdown-code-runner output' it will be marked for removal because it will be replaced with an updated version
         if (remove) {
           // the old output gets removed
@@ -127,29 +148,6 @@ export default async function run(folders: string) {
 
     console.log("written", shortenDir(path, folders), ":)");
   });
-
-}
-
-export interface execute { output: string, exitCode: number, Temp: string, image?: boolean }
-
-const execute = async (MDLanguage: string, code: string, index: number, path: string, options: ExecutorOptions): Promise<execute> => {
-  if (MDLanguage === "javascript" || MDLanguage === "js") {
-
-    return JavascriptExecutor(code, options)
-
-  } else if (MDLanguage === "typescript" || MDLanguage === "ts") {
-
-    return TypescriptExecutor(code, options)
-
-  } else if (MDLanguage === "jsx") {
-
-    return JSXExecutor(code, index, path, options)
-
-  } else {
-
-    return genericExecutor(MDLanguage, code)
-
-  }
 }
 
 const shortenDir = (fileOrDir: string, baseDir: string): string =>
@@ -176,26 +174,21 @@ const getCodeOptions = (part: string) => {
 };
 
 const removeStaleImages = (markdown: string) => {
-  const open = '\n<!-- markdown-code-runner image-start -->\n'
-  const close = '\n<!-- markdown-code-runner image-end -->\n'
-  const parts = markdown.split(open)
+  const open = "\n<!-- markdown-code-runner image-start -->\n";
+  const close = "\n<!-- markdown-code-runner image-end -->\n";
+  const parts = markdown.split(open);
   if (parts.length > 1) {
-    parts.shift()
-    parts.forEach(part => {
-      const oldOutput = part.split(close)[0]
-      markdown = markdown.replace(open + oldOutput + close, '')
-    })
+    parts.shift();
+    parts.forEach((part) => {
+      const oldOutput = part.split(close)[0];
+      markdown = markdown.replace(open + oldOutput + close, "");
+    });
   }
-  return markdown
-}
+  return markdown;
+};
 
 interface output {
   output?: string;
   remove?: boolean;
   markdownCode?: string;
-}
-
-
-export interface ExecutorOptions {
-  dependencies: string[];
 }

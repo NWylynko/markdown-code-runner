@@ -1,9 +1,9 @@
 import { promises as fs } from "fs";
-import languages from "./languages.json";
-import runner from "./utils/runner"
-import { execute } from "./index"
+import languages from "../languages.json";
+import runner from "../utils/runner"
+import { executeOutput } from "../types"
 
-const genericExecutor = async (MDLanguage: string, code: string): Promise<execute> => {
+const genericExecutor = async (MDLanguage: string, code: string): Promise<executeOutput> => {
   // gets the runtime for the code from the language thats defined in the markdown file
   const runTime: string = languages[MDLanguage.toLowerCase()];
 

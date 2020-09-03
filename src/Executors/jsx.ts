@@ -3,14 +3,11 @@ import { spawn } from "child_process";
 import NPM from "../utils/npm";
 import runner from "../utils/runner"
 import captureWebPageScreenShot from "../utils/captureWebPage"
-import { ExecutorOptions, execute } from "../index";
+import { executeOutput, executeInput } from "../types";
 
 const JSXExecutor = async (
-  code: string,
-  index: number,
-  path: string,
-  options?: ExecutorOptions
-): Promise<execute> => {
+  { code, index, path, options }: executeInput
+): Promise<executeOutput> => {
 
   // create a random number to use as a filename for the file to be saved to /tmp and ran from
   const randomFileName = Math.floor(Math.random() * 100000000);

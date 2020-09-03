@@ -6,19 +6,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
 const util_1 = __importDefault(require("util"));
 const glob_1 = __importDefault(require("glob"));
-const languages_json_1 = __importDefault(require("./languages.json"));
-const genericExecutor_1 = __importDefault(require("./genericExecutor"));
-const javascript_1 = __importDefault(require("./Executors/javascript"));
-const typescript_1 = __importDefault(require("./Executors/typescript"));
-const jsx_1 = __importDefault(require("./Executors/jsx"));
-// get al the languages supported by genericExecutor
-const supportedLanguages = Object.keys(languages_json_1.default);
+const Executors_1 = require("./Executors");
 // convert callback functions to async friendly functions
 const globAsync = util_1.default.promisify(glob_1.default);
 async function run(folders) {
     //get the markdown files
     const filesUnFiltered = await globAsync(folders);
-    const files = filesUnFiltered.filter(file => !file.includes("node_modules"));
+    const files = filesUnFiltered.filter((file) => !file.includes("node_modules"));
     if (files.length === 0) {
         console.error("no markdown files found :(");
         process.exit(1);
@@ -29,7 +23,7 @@ async function run(folders) {
         // read in the markdown file
         const markdownFile = await fs_1.promises.readFile(path, "utf8");
         // split the file by '\n``` ' to 'find' the code
-        const parts = markdownFile.split('\n``` ');
+        const parts = markdownFile.split("\n``` ");
         parts.shift();
         if (parts.length === 0) {
             console.error("no code found :(");
@@ -55,25 +49,41 @@ async function run(folders) {
                 console.log("  found stale output, removing it...");
                 return {
                     remove: true,
-                    markdownCode
+                    markdownCode,
                 };
             }
-            // or if its not found in the array of supported languages then just skip over it
-            else if (!supportedLanguages.includes(MDLanguage)) {
-                console.warn("  not supported language");
+            let execute;
+            try {
+                execute = Executors_1.Executors[MDLanguage];
+            }
+            catch (error) {
+                console.warn(`  not supported language`);
                 return;
             }
-            const { output, exitCode, Temp, image } = await execute(MDLanguage, code, index, path, options);
-            if (exitCode === 0) {
+            const { output, exitCode, Temp, image } = await execute({
+                code,
+                index,
+                path,
+                options,
+            });
+            if (exitCode === 0 || exitCode === null) {
                 console.log(" ✔️", Temp, "finished successfully");
             }
             else {
                 console.warn(" ❌", Temp, "failed with error code", exitCode);
             }
             if (image) {
-                return { output: '\n<!-- markdown-code-runner image-start -->\n' + output + '\n<!-- markdown-code-runner image-end -->\n', markdownCode };
+                return {
+                    output: "\n<!-- markdown-code-runner image-start -->\n" +
+                        output +
+                        "\n<!-- markdown-code-runner image-end -->\n",
+                    markdownCode,
+                };
             }
-            return { output: '\n``` markdown-code-runner\n' + output + '\n```\n', markdownCode };
+            return {
+                output: "\n``` markdown-code-runner\n" + output + "\n```\n",
+                markdownCode,
+            };
         }));
         // copy the markdown to a new markdown file so it can be edited
         let newMarkdownFile = markdownFile;
@@ -100,20 +110,6 @@ async function run(folders) {
     });
 }
 exports.default = run;
-const execute = async (MDLanguage, code, index, path, options) => {
-    if (MDLanguage === "javascript" || MDLanguage === "js") {
-        return javascript_1.default(code, options);
-    }
-    else if (MDLanguage === "typescript" || MDLanguage === "ts") {
-        return typescript_1.default(code, options);
-    }
-    else if (MDLanguage === "jsx") {
-        return jsx_1.default(code, index, path, options);
-    }
-    else {
-        return genericExecutor_1.default(MDLanguage, code);
-    }
-};
 const shortenDir = (fileOrDir, baseDir) => fileOrDir.replace(baseDir, "");
 const getCodeOptions = (part) => {
     // 'finds' and gets anything after '<!-- markdown-code-runner\n'
@@ -132,14 +128,14 @@ const getCodeOptions = (part) => {
     return { optionsMarkdown: "" };
 };
 const removeStaleImages = (markdown) => {
-    const open = '\n<!-- markdown-code-runner image-start -->\n';
-    const close = '\n<!-- markdown-code-runner image-end -->\n';
+    const open = "\n<!-- markdown-code-runner image-start -->\n";
+    const close = "\n<!-- markdown-code-runner image-end -->\n";
     const parts = markdown.split(open);
     if (parts.length > 1) {
         parts.shift();
-        parts.forEach(part => {
+        parts.forEach((part) => {
             const oldOutput = part.split(close)[0];
-            markdown = markdown.replace(open + oldOutput + close, '');
+            markdown = markdown.replace(open + oldOutput + close, "");
         });
     }
     return markdown;

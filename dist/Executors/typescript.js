@@ -7,7 +7,7 @@ const fs_1 = require("fs");
 const child_process_1 = require("child_process");
 const npm_1 = __importDefault(require("../utils/npm"));
 const runner_1 = __importDefault(require("../utils/runner"));
-const TypescriptExecutor = async (code, options) => {
+const TypescriptExecutor = async ({ code, options }) => {
     // create a random number to use as a filename for the file to be saved to /tmp and ran from
     const randomFileName = Math.floor(Math.random() * 100000000);
     const TempFolderDir = `/tmp/${randomFileName}`;

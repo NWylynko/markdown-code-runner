@@ -8,7 +8,7 @@ const child_process_1 = require("child_process");
 const npm_1 = __importDefault(require("../utils/npm"));
 const runner_1 = __importDefault(require("../utils/runner"));
 const captureWebPage_1 = __importDefault(require("../utils/captureWebPage"));
-const JSXExecutor = async (code, index, path, options) => {
+const JSXExecutor = async ({ code, index, path, options }) => {
     // create a random number to use as a filename for the file to be saved to /tmp and ran from
     const randomFileName = Math.floor(Math.random() * 100000000);
     const TempFolderDir = `/tmp/${randomFileName}`;

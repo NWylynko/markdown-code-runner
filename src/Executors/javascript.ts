@@ -1,12 +1,11 @@
 import { promises as fs } from "fs";
 import { spawn } from "child_process";
 import NPM from "../utils/npm"
-import { ExecutorOptions, execute } from "../index"
+import { executeInput, executeOutput } from "../types"
 
 const JavascriptExecutor = async (
-  code: string,
-  options: ExecutorOptions
-): Promise<execute> => {
+  { code, options }: executeInput
+): Promise<executeOutput> => {
   // create a random number to use as a filename for the file to be saved to /tmp and ran from
   const randomFileName = Math.floor(Math.random() * 100000000);
 
