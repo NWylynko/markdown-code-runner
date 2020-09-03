@@ -17,11 +17,6 @@ const supportedLanguages = Object.keys(languages);
 const globAsync = util.promisify(glob);
 
 export default async function run(folders: string) {
-
-  console.log(await runner("df", ["-hT"]))
-  await runner("mount", ["-t", "tmpfs", "tmpfs", "/tmp"])
-  console.log(await runner("df", ["-hT"]))
-
   //get the markdown files
   const filesUnFiltered = await globAsync(folders);
 
