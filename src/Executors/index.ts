@@ -9,7 +9,7 @@ export const Executors = {
   "ts": TypescriptExecutor,
   "typescript": TypescriptExecutor,
   "jsx": JSXExecutor,
-  "bash": genericExecutor,
-  "sh": genericExecutor,
-  "shell": genericExecutor
+  "bash": genericExecutor("bash"),
+  "sh": genericExecutor("sh"),
+  "shell": genericExecutor("shell")
 }

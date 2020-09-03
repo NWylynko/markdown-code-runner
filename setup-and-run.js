@@ -1,6 +1,7 @@
 const { spawn } = require("child_process")
 
 const cwd = "/home/runner/work/_actions/nwylynko/markdown-code-runner/master"
+// const cwd = __dirname
 
 const installDependenciesRunner = spawn("yarn", [], { cwd })
 

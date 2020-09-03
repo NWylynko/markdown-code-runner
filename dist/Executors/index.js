@@ -14,7 +14,7 @@ exports.Executors = {
     "ts": typescript_1.default,
     "typescript": typescript_1.default,
     "jsx": jsx_1.default,
-    "bash": genericExecutor_1.default,
-    "sh": genericExecutor_1.default,
-    "shell": genericExecutor_1.default
+    "bash": genericExecutor_1.default("bash"),
+    "sh": genericExecutor_1.default("sh"),
+    "shell": genericExecutor_1.default("shell")
 };
