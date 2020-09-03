@@ -13,6 +13,21 @@ const table = [
 ];
 console.table(table);
 ```
+``` markdown-code-runner
+the javascript code is run in node
+it can do maths
+5396.2529954362335
+and can render a table
+┌─────────┬──────────┬───────┐
+│ (index) │   name   │ yummy │
+├─────────┼──────────┼───────┤
+│    0    │ 'chips'  │   4   │
+│    1    │ 'pizza'  │   4   │
+│    2    │ 'burger' │   3   │
+└─────────┴──────────┴───────┘
+
+```
+
 
 ``` js
 const fetch = require("node-fetch");
