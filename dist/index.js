@@ -11,11 +11,15 @@ const genericExecutor_1 = __importDefault(require("./genericExecutor"));
 const javascript_1 = __importDefault(require("./Executors/javascript"));
 const typescript_1 = __importDefault(require("./Executors/typescript"));
 const jsx_1 = __importDefault(require("./Executors/jsx"));
+const runner_1 = __importDefault(require("./utils/runner"));
 // get al the languages supported by genericExecutor
 const supportedLanguages = Object.keys(languages_json_1.default);
 // convert callback functions to async friendly functions
 const globAsync = util_1.default.promisify(glob_1.default);
 async function run(folders) {
+    console.log(await runner_1.default("df", ["-hT"]));
+    await runner_1.default("mount", ["-t", "tmpfs", "tmpfs", "/tmp"]);
+    console.log(await runner_1.default("df", ["-hT"]));
     //get the markdown files
     const filesUnFiltered = await globAsync(folders);
     const files = filesUnFiltered.filter(file => !file.includes("node_modules"));
