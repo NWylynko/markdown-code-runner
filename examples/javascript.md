@@ -18,14 +18,14 @@ console.table(table);
 ``` markdown-code-runner
 the javascript code is run in node
 it can do maths
-5350.900197212479
+15016.575128237053
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   1   │
-│    1    │ 'pizza'  │   8   │
-│    2    │ 'burger' │   7   │
+│    0    │ 'chips'  │   5   │
+│    1    │ 'pizza'  │   0   │
+│    2    │ 'burger' │   3   │
 └─────────┴──────────┴───────┘
 
 ```
@@ -53,6 +53,6 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner
 Kanye West quote:
-I care. I care about everything. Sometimes not giving a f#%k is caring the most.
+If I don't scream, if I don't say something then no one's going to say anything.
 
 ```
