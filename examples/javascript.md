@@ -18,14 +18,14 @@ console.table(table);
 ``` markdown-code-runner
 the javascript code is run in node
 it can do maths
-3582.663425344074
+9686.185518457714
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   2   │
-│    1    │ 'pizza'  │   7   │
-│    2    │ 'burger' │   2   │
+│    0    │ 'chips'  │   6   │
+│    1    │ 'pizza'  │   5   │
+│    2    │ 'burger' │   3   │
 └─────────┴──────────┴───────┘
 
 ```
@@ -53,6 +53,6 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner
 Kanye West quote:
-Everything you do in life stems from either fear or love
+I feel like I'm too busy writing history to read it.
 
 ```
