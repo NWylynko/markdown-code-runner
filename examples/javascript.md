@@ -40,7 +40,6 @@ fetch('https://api.kanye.rest/')
   .then(console.log)
   .catch(console.error)
 ```
-
 <!-- markdown-code-runner
   {
     "dependencies": [
