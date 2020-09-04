@@ -8,6 +8,7 @@ const genericExecutor_1 = __importDefault(require("./genericExecutor"));
 const javascript_1 = __importDefault(require("./javascript"));
 const typescript_1 = __importDefault(require("./typescript"));
 const jsx_1 = __importDefault(require("./jsx"));
+const python_1 = __importDefault(require("./python"));
 exports.Executors = {
     "js": javascript_1.default,
     "javascript": javascript_1.default,
@@ -17,6 +18,8 @@ exports.Executors = {
     "bash": genericExecutor_1.default("bash"),
     "sh": genericExecutor_1.default("sh"),
     "shell": genericExecutor_1.default("sh"),
-    "py": genericExecutor_1.default("python3"),
-    "python": genericExecutor_1.default("python3")
+    "py": python_1.default(""),
+    "python": python_1.default(""),
+    "py3": python_1.default("3"),
+    "python3": python_1.default("3")
 };

@@ -1,7 +1,7 @@
 
 Pythonic
 
-``` py
+``` py3
 import random
 
 print('running python code is easy')

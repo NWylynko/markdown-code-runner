@@ -1,5 +1,4 @@
 import { promises as fs } from "fs";
-import languages from "../languages.json";
 import runner from "../utils/runner"
 import { executeOutput, executeInput } from "../types"
 

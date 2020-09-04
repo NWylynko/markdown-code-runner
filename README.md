@@ -43,16 +43,22 @@ export default App
 
 <!-- markdown-code-runner image-end -->
 
-Python
+Python 2
 
 ``` py
-print('hello world from python')
+print 'hello world from python 2'
 ```
 
 
 ``` markdown-code-runner
 hello world from python
 
+```
+
+Python 3
+
+``` py3
+print('hello world from python 3')
 ```
 
 
