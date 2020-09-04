@@ -39,7 +39,7 @@ export default App
 
 <!-- markdown-code-runner image-start -->
 
-![rendered jsx](./README.2.png)
+![rendered jsx](./README.4.png)
 
 <!-- markdown-code-runner image-end -->
 
