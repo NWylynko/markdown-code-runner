@@ -13,7 +13,23 @@ const table = [
 ];
 console.table(table);
 ```
+```
 ``` markdown-code-runner
+/tmp/26655786/index.js:12
+```
+   
+
+SyntaxError: Unexpected end of input
+    at wrapSafe (internal/modules/cjs/loader.js:1053:16)
+    at Module._compile (internal/modules/cjs/loader.js:1101:27)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1157:10)
+    at Module.load (internal/modules/cjs/loader.js:985:32)
+    at Function.Module._load (internal/modules/cjs/loader.js:878:14)
+    at Function.executeUserEntryPoint [as runMain] (internal/modules/run_main.js:71:12)
+    at internal/main/run_main_module.js:17:47
+
+```
+ markdown-code-runner
 the javascript code is run in node
 it can do maths
 5396.2529954362335
@@ -47,4 +63,10 @@ fetch('https://api.kanye.rest/')
     ]
   }
 -->
+
+``` markdown-code-runner
+Kanye West quote:
+Everything you do in life stems from either fear or love
+
+```
 
