@@ -8,6 +8,7 @@ const App = () => <p>Example React</p>
 export default App
 ```
 
+
 ``` jsx
 import React from "react"
 

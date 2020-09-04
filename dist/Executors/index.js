@@ -16,5 +16,7 @@ exports.Executors = {
     "jsx": jsx_1.default,
     "bash": genericExecutor_1.default("bash"),
     "sh": genericExecutor_1.default("sh"),
-    "shell": genericExecutor_1.default("shell")
+    "shell": genericExecutor_1.default("sh"),
+    "py": genericExecutor_1.default("python3"),
+    "python": genericExecutor_1.default("python3")
 };

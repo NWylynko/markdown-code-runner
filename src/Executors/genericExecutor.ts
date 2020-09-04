@@ -3,11 +3,8 @@ import languages from "../languages.json";
 import runner from "../utils/runner"
 import { executeOutput, executeInput } from "../types"
 
-const genericExecutor = (MDLanguage: string) => {
-  return async ({ code }: executeInput): Promise<executeOutput> => {
-    // gets the runtime for the code from the language thats defined in the markdown file
-    const runTime: string = languages[MDLanguage.toLowerCase()];
-  
+const genericExecutor = (runTime: string) => {
+  return async ({ code }: executeInput): Promise<executeOutput> => {  
     // create a random number to use as a filename for the file to be saved to /tmp and ran from
     const randomFileName = Math.floor(Math.random() * 100000000);
   
@@ -26,6 +23,8 @@ const genericExecutor = (MDLanguage: string) => {
         output = await runner(runTime, [fileLocation]);
         exitCode = 0
       } catch (error) {
+        console.error(error)
+        output = error
         exitCode = 1
       }
   

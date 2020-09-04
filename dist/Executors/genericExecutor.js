@@ -4,12 +4,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const fs_1 = require("fs");
-const languages_json_1 = __importDefault(require("../languages.json"));
 const runner_1 = __importDefault(require("../utils/runner"));
-const genericExecutor = (MDLanguage) => {
+const genericExecutor = (runTime) => {
     return async ({ code }) => {
-        // gets the runtime for the code from the language thats defined in the markdown file
-        const runTime = languages_json_1.default[MDLanguage.toLowerCase()];
         // create a random number to use as a filename for the file to be saved to /tmp and ran from
         const randomFileName = Math.floor(Math.random() * 100000000);
         const fileLocation = `/tmp/${randomFileName}`;
@@ -24,6 +21,8 @@ const genericExecutor = (MDLanguage) => {
                 exitCode = 0;
             }
             catch (error) {
+                console.error(error);
+                output = error;
                 exitCode = 1;
             }
             // remove the temp file

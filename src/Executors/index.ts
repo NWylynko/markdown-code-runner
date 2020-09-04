@@ -11,5 +11,7 @@ export const Executors = {
   "jsx": JSXExecutor,
   "bash": genericExecutor("bash"),
   "sh": genericExecutor("sh"),
-  "shell": genericExecutor("shell")
+  "shell": genericExecutor("sh"),
+  "py": genericExecutor("python3"),
+  "python": genericExecutor("python3")
 }

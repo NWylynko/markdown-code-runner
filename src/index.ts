@@ -2,11 +2,6 @@ import { promises as fs } from "fs";
 import util from "util";
 import glob from "glob";
 
-import genericExecutor from "./Executors/genericExecutor";
-import JavascriptExecutor from "./Executors/javascript";
-import TypescriptExecutor from "./Executors/typescript";
-import JSXExecutor from "./Executors/jsx";
-
 import { Executors } from "./Executors";
 
 import { executeInput, executeOutput, ExecutorOptions } from "./types";
@@ -24,18 +19,18 @@ export default async function run(folders: string) {
 
   if (files.length === 0) {
     console.error("no markdown files found :(");
-    process.exit(1);
+    return;
   }
 
   // loop over each file found
   files.forEach(async (path) => {
-    console.log("opening", shortenDir(path, folders));
+    console.log("opening", shortenDir(path));
 
     // read in the markdown file
     const markdownFile = await fs.readFile(path, "utf8");
 
     // split the file by '\n``` ' to 'find' the code
-    const parts = markdownFile.split("\n``` ");
+    const parts = markdownFile.split("\n\n``` ");
     parts.shift();
 
     if (parts.length === 0) {
@@ -65,7 +60,7 @@ export default async function run(folders: string) {
 
         // this is used to append the output to the code
         const markdownCode =
-          "\n``` " + codeWithLanguage + "\n```" + optionsMarkdown;
+          "\n\n``` " + codeWithLanguage + "\n```\n" + optionsMarkdown;
 
         // if one of the attributes is "markdown-code-runner" it was added by the last time it was run so it should be removed to be replaced
         if (MDLanguage.includes("markdown-code-runner")) {
@@ -81,13 +76,11 @@ export default async function run(folders: string) {
           index,
           path,
           options,
-        }: executeInput) => Promise<executeOutput>;
+        }: executeInput) => Promise<executeOutput> = Executors[MDLanguage];
 
-        try {
-          execute = Executors[MDLanguage];
-        } catch (error) {
-          console.warn(`  not supported language`);
-          return;
+        if (!execute) {
+          console.warn(`  ${MDLanguage} not supported language`);
+          return { skip: true };
         }
 
         const { output, exitCode, Temp, image } = await execute({
@@ -113,7 +106,7 @@ export default async function run(folders: string) {
           };
         }
         return {
-          output: "\n``` markdown-code-runner\n" + output + "\n```\n",
+          output: "\n\n``` markdown-code-runner\n" + output + "\n```\n",
           markdownCode,
         };
       })
@@ -124,9 +117,11 @@ export default async function run(folders: string) {
     newMarkdownFile = removeStaleImages(newMarkdownFile);
 
     await Promise.all(
-      outputs.map(async ({ remove, markdownCode, output }: output) => {
+      outputs.map(async ({ remove, markdownCode, output, skip }: output) => {
         // if a chuck of code has 'markdown-code-runner output' it will be marked for removal because it will be replaced with an updated version
-        if (remove) {
+        if (skip) {
+          return;
+        } else if (remove) {
           // the old output gets removed
           // replace it with '' (aka nothing)
           newMarkdownFile = newMarkdownFile.replace(markdownCode, "");
@@ -146,29 +141,42 @@ export default async function run(folders: string) {
     // write the new markdown file out :)
     await fs.writeFile(path, newMarkdownFile);
 
-    console.log("written", shortenDir(path, folders), ":)");
+    console.log("written", shortenDir(path), ":)");
   });
 }
 
-const shortenDir = (fileOrDir: string, baseDir: string): string =>
-  fileOrDir.replace(baseDir, "");
+// TODO: figure out how to shorten consistently
+const shortenDir = (fileOrDir: string): string =>
+  fileOrDir;
 
 const getCodeOptions = (part: string) => {
+
+  const opener = "<!-- markdown-code-runner\n"
+  const closer = "\n-->\n"
+
   // 'finds' and gets anything after '<!-- markdown-code-runner\n'
-  const markdownOptions = part.split("<!-- markdown-code-runner\n");
+  const markdownOptions = part.split(opener);
 
   // if the length is 2 it means the options have been defined
   if (markdownOptions.length === 2) {
     // then gets everything before the closing -->
-    const optionsString = markdownOptions[1].split("\n-->")[0];
+    const optionsString = markdownOptions[1].split(closer)[0];
 
+    try {
+     
     // use built in JSON.parse function to parse the json
-    const options: ExecutorOptions = JSON.parse(optionsString);
-
+    const options: ExecutorOptions = JSON.parse(optionsString); 
     return {
       options,
-      optionsMarkdown: `\n<!-- markdown-code-runner\n${optionsString}\n-->\n`,
+      optionsMarkdown: `${opener}${optionsString}${closer}`,
     };
+    } catch (error) {
+      console.error('failed to parse options')
+      console.error(optionsString)
+      throw new Error(error)
+    }
+
+    
   }
   return { optionsMarkdown: "" };
 };
@@ -191,4 +199,5 @@ interface output {
   output?: string;
   remove?: boolean;
   markdownCode?: string;
+  skip?: boolean;
 }

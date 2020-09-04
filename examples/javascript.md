@@ -13,7 +13,6 @@ const table = [
 ];
 console.table(table);
 ```
-
 <!-- markdown-code-runner
   {
     "dependencies": [
