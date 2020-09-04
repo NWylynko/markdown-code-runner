@@ -18,14 +18,14 @@ console.table(table);
 ``` markdown-code-runner
 the javascript code is run in node
 it can do maths
-3959.4807229966354
+5350.900197212479
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
-│    0    │ 'chips'  │   4   │
-│    1    │ 'pizza'  │   9   │
-│    2    │ 'burger' │   9   │
+│    0    │ 'chips'  │   1   │
+│    1    │ 'pizza'  │   8   │
+│    2    │ 'burger' │   7   │
 └─────────┴──────────┴───────┘
 
 ```
@@ -53,6 +53,6 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner
 Kanye West quote:
-Just stop lying about shit. Just stop lying.
+I care. I care about everything. Sometimes not giving a f#%k is caring the most.
 
 ```
