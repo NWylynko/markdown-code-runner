@@ -18,14 +18,14 @@ console.table(table);
 ``` markdown-code-runner
 the javascript code is run in node
 it can do maths
-13091.294891903131
+3582.663425344074
 and can render a table
 ┌─────────┬──────────┬───────┐
 │ (index) │   name   │ yummy │
 ├─────────┼──────────┼───────┤
 │    0    │ 'chips'  │   2   │
 │    1    │ 'pizza'  │   7   │
-│    2    │ 'burger' │   1   │
+│    2    │ 'burger' │   2   │
 └─────────┴──────────┴───────┘
 
 ```
@@ -53,6 +53,6 @@ fetch('https://api.kanye.rest/')
 
 ``` markdown-code-runner
 Kanye West quote:
-I give up drinking every week
+Everything you do in life stems from either fear or love
 
 ```
