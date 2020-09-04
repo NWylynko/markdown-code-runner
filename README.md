@@ -51,7 +51,7 @@ print 'hello world from python 2'
 
 
 ``` markdown-code-runner
-hello world from python
+hello world from python 2
 
 ```
 
@@ -59,6 +59,12 @@ Python 3
 
 ``` py3
 print('hello world from python 3')
+```
+
+
+``` markdown-code-runner
+hello world from python 3
+
 ```
 
 
