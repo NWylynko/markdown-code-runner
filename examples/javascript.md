@@ -13,6 +13,19 @@ const table = [
 ];
 console.table(table);
 ```
+
+
+``` js
+const fetch = require("node-fetch");
+
+console.log('Kanye West quote:')
+
+fetch('https://api.kanye.rest/')
+  .then(res => res.json())
+  .then(body => body.quote)
+  .then(console.log)
+  .catch(console.error)
+```
 <!-- markdown-code-runner
   {
     "dependencies": [
